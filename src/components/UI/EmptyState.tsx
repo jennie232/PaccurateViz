@@ -1,39 +1,41 @@
 "use client"
-import React, { useState } from 'react';
-import {
-    Table,
-    Thead,
-    Tbody,
-    Tr,
-    Th,
-    Td,
-    IconButton,
-    Checkbox,
-    useDisclosure,
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalCloseButton,
-    Box,
-    Image,
-    Text,
-    VStack,
-} from '@chakra-ui/react';
+import React from 'react';
+import { Image, Text, VStack, Flex } from '@chakra-ui/react';
 
 interface EmptyStateProps {
     subject: string;
+    height?: string;
 }
 
-export const EmptyState: React.FC<EmptyStateProps> = ({ subject }) => {
+export const EmptyState: React.FC<EmptyStateProps> = ({ subject, height = '100%' }) => {
     return (
-        <Box textAlign="center" borderStyle="dashed" borderWidth={1} borderColor="gray.300" p={10} borderRadius="md">
-            <VStack gap={8}>
-                <Image src="/empty-state.png" alt="Empty state" width="150px" />
-                <Text fontSize="xl" fontWeight="bold">You have no {subject.toLowerCase()}s yet.</Text>
-                <Text color="gray.500" fontSize="md">Start by clicking the 'Add {subject}' button above.</Text>
+        <Flex
+            height={height}
+            width="100%"
+            alignItems="center"
+            justifyContent="center"
+            textAlign="center"
+            borderStyle="dashed"
+            borderWidth={1}
+            borderColor="gray.300"
+            borderRadius="md"
+        >
+            <VStack spacing={4} p={6} maxWidth="100%">
+                <Image
+                    src="/empty-state.png"
+                    alt="Empty state"
+                    width="auto"
+                    height="auto"
+                    maxWidth="150px"
+                    maxHeight="13vh"
+                />
+                <Text fontSize={["sm", "md", "lg"]} fontWeight="bold">
+                    You have no {subject.toLowerCase()}s yet.
+                </Text>
+                <Text color="gray.500" fontSize={["xs", "sm"]}>
+                    Start by clicking the 'Add {subject}' button above.
+                </Text>
             </VStack>
-        </Box>
+        </Flex>
     );
 };

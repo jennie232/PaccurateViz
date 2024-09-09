@@ -106,7 +106,7 @@ function PaccurateStepper() {
                 p={6}
             >
                 <Divider mt={2} />
-                <Flex mt={4} p={6} justify="space-between">
+                <Flex mt={2} p={4} justify="space-between">
                     <Button
                         fontSize="sm"
                         onClick={() => setActiveStep(activeStep - 1)}

@@ -14,7 +14,7 @@ import {
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { usePaccurateStore } from '@/app/store/paccurateStore';
 import { BoxTypeForm } from './BoxTypeForm';
-import { EmptyState } from '../EmptyState';
+import { EmptyState } from '../UI/EmptyState';
 import { GenericModal } from '../UI/GenericModal';
 
 
@@ -59,7 +59,7 @@ export const BoxTypeList: React.FC = () => {
                                 <Checkbox
                                     isChecked={selectedCustomBoxTypeIds.includes(boxType.id)}
                                     onChange={() => toggleCustomBoxTypeSelection(boxType.id)}
-                                    colorScheme="purple" // Change the color of the checkbox
+                                    colorScheme="purple"
                                 />
                             </Td>
                             <Td>

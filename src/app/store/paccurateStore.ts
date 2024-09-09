@@ -57,9 +57,13 @@ export const usePaccurateStore = create<PaccurateState>((set) => ({
       ? state.boxTypeSets.filter((set) => set !== boxTypeSet)
       : [...state.boxTypeSets, boxTypeSet]
   })),
-  addCustomBoxType: (boxType) => set((state) => ({
-    customBoxTypes: [...state.customBoxTypes, { ...boxType, id: uuidv4() }]
-  })),
+  addCustomBoxType: (boxType) => set((state) => {
+    const newBoxType = { ...boxType, id: uuidv4() };
+    return {
+      customBoxTypes: [...state.customBoxTypes, newBoxType],
+      selectedCustomBoxTypeIds: [...state.selectedCustomBoxTypeIds, newBoxType.id]
+    };
+  }),
   removeCustomBoxType: (id) => set((state) => ({
     customBoxTypes: state.customBoxTypes.filter((bt) => bt.id !== id),
     selectedCustomBoxTypeIds: state.selectedCustomBoxTypeIds.filter((selectedId) => selectedId !== id)

@@ -1,10 +1,13 @@
 import React from 'react';
-import { VStack, Heading, Box, Flex, Button, useDisclosure, Text, Divider } from '@chakra-ui/react';
+import { VStack, Box, Flex, useDisclosure, Text, Divider } from '@chakra-ui/react';
+
 import { FaUsps, FaPallet, FaFedex } from 'react-icons/fa';
+import { AddIcon } from '@chakra-ui/icons';
 import { usePaccurateStore } from '@/app/store/paccurateStore';
 import { BoxTypeCard } from './BoxTypeCard';
 import { BoxTypeList } from './BoxTypeList';
-import { BoxTypeModal } from './BoxTypeModal';
+import { GenericModal } from '../UI/GenericModal';
+import { BoxTypeForm } from './BoxTypeForm';
 
 const predefinedBoxTypes = [
     { id: 'fedex', name: 'FedEx', icon: FaFedex, description: 'FedEx OneRate' },
@@ -18,6 +21,14 @@ export const BoxTypeSet: React.FC = () => {
 
     return (
         <VStack spacing={8} align="stretch">
+            <Box>
+                <Text fontSize="2xl" fontWeight="bold">
+                    Create Box Types
+                </Text>
+                <Text mt={2} fontSize="sm" color="blackAlpha.600" fontWeight={500}>
+                    Either select a predefined box type or create a custom one. You can select multiple box types.
+                </Text>
+            </Box>
             <Box>
                 <Text mb={6} fontSize="17px" fontWeight="bold">Predefined Box Types</Text>
                 <Flex wrap="wrap" gap={6}>
@@ -35,7 +46,18 @@ export const BoxTypeSet: React.FC = () => {
             <Box>
                 <Flex justify="space-between" align="center" mb={4}>
                     <Text mb={6} fontSize="17px" fontWeight="bold">Custom Box Types</Text>
-                    <BoxTypeModal />
+                    <GenericModal
+                        isOpen={isOpen}
+                        onClose={onClose}
+                        title="Add Custom Box Type"
+                        triggerButton={{
+                            text: "Add Custom Box Type",
+                            icon: <AddIcon ml={2} />,
+                            onClick: onOpen,
+                        }}
+                    >
+                        <BoxTypeForm onClose={onClose} />
+                    </GenericModal>
                 </Flex>
                 <BoxTypeList />
             </Box>

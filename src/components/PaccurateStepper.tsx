@@ -4,10 +4,9 @@ import React from 'react';
 import { Box, Text, Divider, Flex, Button } from '@chakra-ui/react';
 import { Stepper, Step, StepIndicator, StepStatus, StepTitle, StepSeparator, useSteps, StepIcon, StepNumber } from '@chakra-ui/stepper';
 import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
-import { ItemModal } from "@/components/ItemSet/ItemModal";
-import { ItemList } from "@/components/ItemSet/ItemList";
 import { BoxTypeSet } from "@/components/BoxType/BoxTypeSet";
 import { testPaccurateApi } from "@/app/testPaccurateApi";
+import { ItemSet } from './Item/ItemSet';
 
 const steps = [
     { title: "Item Set" },
@@ -27,7 +26,7 @@ const handleTestApi = async () => {
 
 function PaccurateStepper() {
     const { activeStep, setActiveStep } = useSteps({
-        index: 1,
+        index: 0,
         count: steps.length,
     });
 
@@ -80,36 +79,12 @@ function PaccurateStepper() {
             <Box p={6}>
                 {activeStep === 0 && (
                     <Flex flexDirection="column" gap={4}>
-
-                        <Flex mb={4} justify="space-between" align="center">
-                            <Box>
-                                <Text fontSize="2xl" fontWeight="bold">
-                                    Create Items
-                                </Text>
-                                <Text mt={2} fontSize="sm" color="blackAlpha.600" fontWeight={500}>
-                                    Define the items that need to be packed.
-                                </Text>
-                            </Box>
-                            <ItemModal />
-                        </Flex>
-                        <ItemList />
+                        <ItemSet />
                     </Flex>
+
                 )}
                 {activeStep === 1 && (
                     <>
-                        <Flex flexDirection="column" gap={4}>
-                            <Box mb={10}>
-                                <Text fontSize="2xl" fontWeight="bold">
-                                    Create Box Types
-                                </Text>
-                                <Text mt={2} fontSize="sm" color="blackAlpha.600">
-                                    Either select a predefined box type or create a custom one. You can select multiple box types.
-                                </Text>
-                            </Box>
-                        </Flex>
-                        <Button onClick={handleTestApi} colorScheme="green">
-                            Test Paccurate API
-                        </Button>
                         <BoxTypeSet />
 
                     </>

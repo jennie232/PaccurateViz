@@ -10,17 +10,13 @@ import {
     IconButton,
     Checkbox,
     useDisclosure,
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalCloseButton,
 } from '@chakra-ui/react';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { usePaccurateStore } from '@/app/store/paccurateStore';
 import { BoxTypeForm } from './BoxTypeForm';
 import { EmptyState } from '../EmptyState';
+import { GenericModal } from '../UI/GenericModal';
+
 
 export const BoxTypeList: React.FC = () => {
     const { customBoxTypes, selectedCustomBoxTypeIds, removeCustomBoxType, toggleCustomBoxTypeSelection } = usePaccurateStore();
@@ -52,7 +48,7 @@ export const BoxTypeList: React.FC = () => {
                     </Tr>
                 </Thead>
                 <Tbody>
-                    {customBoxTypes.map((boxType) => (
+                    {customBoxTypes.map((boxType: typeof customBoxTypes[number]) => (
                         <Tr key={boxType.id}>
                             <Td>{boxType.name || 'Unnamed'}</Td>
                             <Td>{`${boxType.dimensions.x} x ${boxType.dimensions.y} x ${boxType.dimensions.z}`}</Td>
@@ -86,24 +82,25 @@ export const BoxTypeList: React.FC = () => {
                 </Tbody>
             </Table>
 
-            <Modal isOpen={isOpen} onClose={onClose}>
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>Edit Box Type</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        {editingBoxType && (
-                            <BoxTypeForm
-                                onClose={() => {
-                                    setEditingBoxType(null);
-                                    onClose();
-                                }}
-                                editingBoxType={editingBoxType}
-                            />
-                        )}
-                    </ModalBody>
-                </ModalContent>
-            </Modal>
+            <GenericModal
+                isOpen={isOpen}
+                onClose={() => {
+                    setEditingBoxType(null);
+                    onClose();
+                }}
+                title="Edit Box Type"
+            >
+                {editingBoxType && (
+                    <BoxTypeForm
+                        onClose={() => {
+                            setEditingBoxType(null);
+                            onClose();
+                        }}
+                        editingBoxType={editingBoxType}
+                    />
+                )}
+            </GenericModal>
+
         </>
     );
 }

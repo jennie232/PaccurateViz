@@ -8,6 +8,7 @@ import {
     FormLabel,
     Input,
     Button,
+    Flex,
     VStack,
     HStack,
     FormErrorMessage,
@@ -40,8 +41,12 @@ const schema = yup.object().shape({
     weightMax: yup.number().typeError('Max weight must be filled out and non-negative')
         .min(0, 'Max weight must be non-negative')
         .required('Max weight must be filled out'),
-    weightTare: yup.number().nullable().transform((value, originalValue) => originalValue.trim() === '' ? null : value),
-    price: yup.number().nullable().transform((value, originalValue) => originalValue.trim() === '' ? null : value),
+    weightTare: yup.number().nullable().transform((value, originalValue) =>
+        originalValue === '' || originalValue === null || originalValue === undefined ? null : value
+    ),
+    price: yup.number().nullable().transform((value, originalValue) =>
+        originalValue === '' || originalValue === null || originalValue === undefined ? null : value
+    ),
 });
 
 type BoxTypeFormData = yup.InferType<typeof schema>;
@@ -142,10 +147,11 @@ export const BoxTypeForm: React.FC<BoxTypeFormProps> = ({ onClose, editingBoxTyp
                     </NumberInput>
                     <FormErrorMessage>{errors.price?.message}</FormErrorMessage>
                 </FormControl>
-
-                <Button type="submit" bg="purple.600" color="white" _hover={{ bg: 'purple.800' }} fontSize="sm">
-                    {editingBoxType ? 'Update' : 'Add'} Box Type
-                </Button>
+                <Flex justifyContent="flex-end" width="100%">
+                    <Button type="submit" bg="purple.600" color="white" _hover={{ bg: 'purple.800' }} fontSize="sm">
+                        {editingBoxType ? 'Update' : 'Add'} Box Type
+                    </Button>
+                </Flex>
             </VStack>
         </form>
     );

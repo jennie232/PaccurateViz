@@ -5,6 +5,8 @@ import { usePaccurateStore } from '@/app/store/paccurateStore';
 import { EmptyState } from '../EmptyState';
 import { ItemForm } from './ItemForm';
 import { useDisclosure } from '@chakra-ui/react';
+import { GenericModal } from '../UI/GenericModal';
+
 export const ItemList: React.FC = () => {
     const { items, removeItem, updateItem } = usePaccurateStore();
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -65,24 +67,24 @@ export const ItemList: React.FC = () => {
                     ))}
                 </Tbody>
             </Table>
-            <Modal isOpen={isOpen} onClose={onClose}>
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>Edit Item</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        {editingItem && (
-                            <ItemForm
-                                onClose={() => {
-                                    setEditingItem(null);
-                                    onClose();
-                                }}
-                                editingItem={editingItem}
-                            />
-                        )}
-                    </ModalBody>
-                </ModalContent>
-            </Modal>
+            <GenericModal
+                isOpen={isOpen}
+                onClose={() => {
+                    setEditingItem(null);
+                    onClose();
+                }}
+                title="Edit Item"
+            >
+                {editingItem && (
+                    <ItemForm
+                        onClose={() => {
+                            setEditingItem(null);
+                            onClose();
+                        }}
+                        editingItem={editingItem}
+                    />
+                )}
+            </GenericModal>
 
         </>
     );

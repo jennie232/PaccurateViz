@@ -1,4 +1,3 @@
-"use client"
 import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -17,6 +16,7 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
+  Flex,
 } from '@chakra-ui/react';
 
 interface ItemFormProps {
@@ -26,11 +26,13 @@ interface ItemFormProps {
 
 // Schema for item form validation
 const schema = yup.object().shape({
-  refId: yup.number().nullable().transform((value, originalValue) => (originalValue.trim() === '' ? null : value)),
+  refId: yup.number().nullable().transform((value, originalValue) =>
+    originalValue === '' || originalValue === null || originalValue === undefined ? null : value
+  ),
   name: yup.string().nullable(),
   color: yup.string().nullable(),
   weight: yup.number()
-    .typeError('Weight must be filled out and  non-negative')
+    .typeError('Weight must be filled out and non-negative')
     .min(0, 'Weight must be non-negative')
     .required('Weight must be filled out'),
   dimensions: yup.object().shape({
@@ -60,14 +62,23 @@ type ItemFormData = yup.InferType<typeof schema>;
 export const ItemForm: React.FC<ItemFormProps> = ({ onClose, editingItem }) => {
   const { register, handleSubmit, formState: { errors } } = useForm<ItemFormData>({
     resolver: yupResolver(schema),
+    defaultValues: editingItem ? {
+      ...editingItem,
+      refId: editingItem.refId === null ? null : Number(editingItem.refId)
+    } : undefined
   });
 
-  const [color, setColor] = React.useState<string>('#ff0000');
+  const [color, setColor] = React.useState<string>(editingItem?.color || '#ff0000');
 
   const addItem = usePaccurateStore(state => state.addItem);
+  const updateItem = usePaccurateStore(state => state.updateItem);
 
   const onSubmit: SubmitHandler<ItemFormData> = (data) => {
-    addItem({ ...data, color });
+    if (editingItem) {
+      updateItem(editingItem.id, { ...data, color });
+    } else {
+      addItem({ ...data, color });
+    }
     onClose();
   };
 
@@ -75,6 +86,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ onClose, editingItem }) => {
     const newColor = e.target.value;
     setColor(newColor);
   };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <VStack spacing={6} align="stretch">
@@ -152,11 +164,12 @@ export const ItemForm: React.FC<ItemFormProps> = ({ onClose, editingItem }) => {
           <FormErrorMessage>{errors.quantity?.message}</FormErrorMessage>
         </FormControl>
 
-        <Button type="submit" bg="purple.600" color="white" _hover={{ bg: 'purple.800' }} fontSize="sm">
-          Add Item
-        </Button>
+        <Flex justifyContent="flex-end" width="100%">
+          <Button type="submit" bg="purple.600" color="white" _hover={{ bg: 'purple.800' }} fontSize="sm">
+            {editingItem ? 'Update' : 'Add'} Item
+          </Button>
+        </Flex>
       </VStack>
     </form>
   );
-}
-
+};

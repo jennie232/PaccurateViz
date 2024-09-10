@@ -11,7 +11,7 @@ interface BoxTypeCardProps {
     onToggle: () => void;
 }
 
-export const BoxTypeCard: React.FC<BoxTypeCardProps> = ({ id, name, icon, description, isSelected, onToggle }) => {
+export const BoxTypeCard: React.FC<BoxTypeCardProps> = ({ name, icon, description, isSelected, onToggle }) => {
     return (
         <Box
             borderWidth={1}

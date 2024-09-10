@@ -7,7 +7,7 @@ import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import { BoxTypeSet } from "@/components/BoxType/BoxTypeSet";
 import { testPaccurateApi } from "@/app/testPaccurateApi";
 import { ItemSet } from './Item/ItemSet';
-
+import { RuleDisplay } from './Rule/RuleDisplay';
 const steps = [
     { title: "Item Set" },
     { title: "Box Type" },
@@ -86,11 +86,10 @@ function PaccurateStepper() {
                 {activeStep === 1 && (
                     <>
                         <BoxTypeSet />
-
                     </>
                 )}
                 {activeStep === 2 && (
-                    <Text>Rules content will go here</Text>
+                    <RuleDisplay />
                 )}
                 {activeStep === 3 && (
                     <Text>Rate Tables content will go here</Text>

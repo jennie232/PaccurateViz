@@ -8,7 +8,7 @@ import { useDisclosure } from '@chakra-ui/react';
 import { GenericModal } from '../UI/GenericModal';
 
 export const ItemList: React.FC = () => {
-    const { items, removeItem, updateItem } = usePaccurateStore();
+    const { items, removeItem } = usePaccurateStore();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [editingItem, setEditingItem] = useState<(typeof items)[number] | null>(null);
 

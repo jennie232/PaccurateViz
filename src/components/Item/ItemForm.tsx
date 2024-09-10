@@ -24,7 +24,6 @@ interface ItemFormProps {
   editingItem?: ItemFormData & { id: string };
 }
 
-// Schema for item form validation
 const schema = yup.object().shape({
   refId: yup.number().nullable().transform((value, originalValue) =>
     originalValue === '' || originalValue === null || originalValue === undefined ? null : value

@@ -17,17 +17,19 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   Flex,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
 } from '@chakra-ui/react';
 
 interface ItemFormProps {
   onClose: () => void;
-  editingItem?: ItemFormData & { id: string };
+  editingItem?: ItemFormData;
 }
 
 const schema = yup.object().shape({
-  refId: yup.number().nullable().transform((value, originalValue) =>
-    originalValue === '' || originalValue === null || originalValue === undefined ? null : value
-  ),
+  refId: yup.number().positive().integer().transform((value) => (isNaN(value) ? undefined : value)).nullable(),
   name: yup.string().nullable(),
   color: yup.string().nullable(),
   weight: yup.number()
@@ -59,26 +61,35 @@ const schema = yup.object().shape({
 type ItemFormData = yup.InferType<typeof schema>;
 
 export const ItemForm: React.FC<ItemFormProps> = ({ onClose, editingItem }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm<ItemFormData>({
+  const { register, handleSubmit, formState: { errors }, setError } = useForm<ItemFormData>({
     resolver: yupResolver(schema),
-    defaultValues: editingItem ? {
-      ...editingItem,
-      refId: editingItem.refId === null ? null : Number(editingItem.refId)
-    } : undefined
+    defaultValues: editingItem
   });
 
   const [color, setColor] = React.useState<string>(editingItem?.color || '#ff0000');
+  const [formError, setFormError] = React.useState<string | null>(null);
 
   const addItem = usePaccurateStore(state => state.addItem);
   const updateItem = usePaccurateStore(state => state.updateItem);
 
   const onSubmit: SubmitHandler<ItemFormData> = (data) => {
-    if (editingItem) {
-      updateItem(editingItem.id, { ...data, color });
-    } else {
-      addItem({ ...data, color });
+    const itemData = { ...data, color, refId: data.refId || undefined };
+    if (itemData.refId === undefined) {
+      delete itemData.refId;
     }
-    onClose();
+    let result;
+    if (editingItem && editingItem.refId !== null && editingItem.refId !== undefined) {
+      result = updateItem(editingItem.refId, itemData);
+    } else {
+      result = addItem(itemData);
+    }
+    console.log(result);
+    if (result && 'error' in result) {
+      setFormError(result.error);
+      setError('refId', { type: 'manual', message: result.error });
+    } else {
+      onClose();
+    }
   };
 
   const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,6 +100,13 @@ export const ItemForm: React.FC<ItemFormProps> = ({ onClose, editingItem }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <VStack spacing={6} align="stretch">
+        {formError && (
+          <Alert status="error">
+            <AlertIcon />
+            <AlertTitle mr={2}>Error:</AlertTitle>
+            <AlertDescription>{formError}</AlertDescription>
+          </Alert>
+        )}
         <FormControl isInvalid={!!errors.refId}>
           <FormLabel fontWeight="bold" fontSize="sm">Reference ID (optional)</FormLabel>
           <NumberInput>

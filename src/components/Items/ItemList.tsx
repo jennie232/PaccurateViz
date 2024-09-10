@@ -39,8 +39,8 @@ export const ItemList: React.FC = () => {
                 </Thead>
                 <Tbody>
                     {items.map((item) => (
-                        <Tr key={item.id}>
-                            <Td>{item.refId != null && item.refId !== -1 ? item.refId : 'Not set'}</Td>
+                        <Tr key={item.refId}>
+                            <Td>{item.refId}</Td>
                             <Td>{item.name || 'Unnamed'}</Td>
                             <Td>
                                 <Box w="20px" h="20px" bg={item.color || 'gray'} borderRadius="md" />
@@ -60,7 +60,7 @@ export const ItemList: React.FC = () => {
                                     aria-label="Delete item"
                                     icon={<DeleteIcon />}
                                     size="sm"
-                                    onClick={() => removeItem(item.id)}
+                                    onClick={() => removeItem(item.refId)}
                                 />
                             </Td>
                         </Tr>
@@ -85,8 +85,6 @@ export const ItemList: React.FC = () => {
                     />
                 )}
             </GenericModal>
-
         </>
     );
 }
-

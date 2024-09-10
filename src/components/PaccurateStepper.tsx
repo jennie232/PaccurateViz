@@ -4,10 +4,10 @@ import React from 'react';
 import { Box, Text, Divider, Flex, Button } from '@chakra-ui/react';
 import { Stepper, Step, StepIndicator, StepStatus, StepTitle, StepSeparator, useSteps, StepIcon, StepNumber } from '@chakra-ui/stepper';
 import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
-import { BoxTypeSet } from "@/components/BoxType/BoxTypeSet";
+import { BoxTypeSet } from "@/components/BoxTypes/BoxTypeSet";
 import { testPaccurateApi } from "@/app/testPaccurateApi";
-import { ItemSet } from './Item/ItemSet';
-import { RuleDisplay } from './Rule/RuleDisplay';
+import { ItemSet } from './Items/ItemSet';
+import { RuleDisplay } from './Rules/RuleDisplay';
 const steps = [
     { title: "Item Set" },
     { title: "Box Type" },

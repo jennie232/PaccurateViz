@@ -2,9 +2,8 @@ import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
 
 interface Item {
-  id: string;
-  refId?: number | null;
-  name?: string | null; // Allow name to be string, null, or undefined
+  refId: number;
+  name?: string | null;
   color?: string;
   weight: number;
   dimensions: {
@@ -14,6 +13,7 @@ interface Item {
   };
   quantity: number;
 }
+
 interface BoxType {
   id: string;
   name?: string | null;
@@ -30,7 +30,7 @@ interface BoxType {
 export interface Rule {
   id: string;
   operation: 'internal-space' | 'alternate-dimensions' | 'exclude' | 'exclude-all' | 'pack-as-is' | 'irregular' | 'lock-orientation' | 'fragile' | 'group-pack';
-  itemRefId?: number;
+  itemRefId: number;
   itemMatch?: {
     all: boolean;
     property?: 'refId' | 'name';
@@ -43,17 +43,19 @@ export interface Rule {
     [key: string]: any;
   };
 }
+
 interface PaccurateState {
   items: Item[];
-  selectedItemId: string | null;
+  selectedItemRefId: number | null;
   boxTypeSets: string[];
   customBoxTypes: BoxType[];
   selectedCustomBoxTypeIds: string[];
   rules: Rule[];
-  addItem: (item: Omit<Item, 'id'>) => void;
-  removeItem: (id: string) => void;
-  updateItem: (id: string, item: Partial<Item>) => void;
-  selectItem: (id: string) => void;
+  nextRefId: number;
+  addItem: (item: Omit<Item, 'refId'> & { refId?: number }) => { error: string } | void;
+  removeItem: (refId: number) => void;
+  updateItem: (refId: number, item: Partial<Item>) => void;
+  selectItem: (refId: number) => void;
   toggleBoxTypeSet: (boxTypeSet: string) => void;
   addCustomBoxType: (boxType: Omit<BoxType, 'id'>) => void;
   removeCustomBoxType: (id: string) => void;
@@ -64,24 +66,68 @@ interface PaccurateState {
   updateRule: (id: string, rule: Partial<Rule>) => void;
 }
 
-export const usePaccurateStore = create<PaccurateState>((set) => ({
+export const usePaccurateStore = create<PaccurateState>((set, get) => ({
   items: [],
-  selectedItemId: null,
+  selectedItemRefId: null,
   boxTypeSets: [],
   customBoxTypes: [],
   selectedCustomBoxTypeIds: [],
   rules: [],
-  addItem: (item) => set((state) => ({ items: [...state.items, { ...item, id: uuidv4() }] })),
-  removeItem: (id) => set((state) => ({ items: state.items.filter(i => i.id !== id) })),
-  updateItem: (id, updatedItem) => set((state) => ({
-    items: state.items.map(item => item.id === id ? { ...item, ...updatedItem } : item)
+  nextRefId: 1, // Start with 1 as the first refId
+
+  addItem: (item) => {
+    let error: string | undefined;
+    set((state) => {
+      let refId = item.refId;
+      if (refId === undefined) {
+        refId = state.nextRefId;
+        state.nextRefId++;
+      } else {
+        if (state.items.some(existingItem => existingItem.refId === refId)) {
+          error = 'RefId must be unique';
+          return state; // Return current state without changes
+        }
+        state.nextRefId = Math.max(state.nextRefId, refId + 1);
+      }
+      return {
+        items: [...state.items, { ...item, refId }],
+        nextRefId: state.nextRefId,
+      };
+    });
+    return error ? { error } : undefined;
+  },
+
+  removeItem: (refId) => set((state) => ({
+    items: state.items.filter(i => i.refId !== refId)
   })),
-  selectItem: (id) => set({ selectedItemId: id }),
+
+  updateItem: (refId, updatedItem) => {
+    let error: string | undefined;
+    set((state) => {
+      if (updatedItem.refId !== undefined &&
+        updatedItem.refId !== refId &&
+        state.items.some(item => item.refId === updatedItem.refId)) {
+        error = 'RefId must be unique';
+        return state; // Return current state without changes
+      }
+
+      return {
+        items: state.items.map(item =>
+          item.refId === refId ? { ...item, ...updatedItem } : item
+        ),
+      };
+    });
+    return error ? { error } : undefined;
+  },
+
+  selectItem: (refId) => set({ selectedItemRefId: refId }),
+
   toggleBoxTypeSet: (boxTypeSet) => set((state) => ({
     boxTypeSets: state.boxTypeSets.includes(boxTypeSet)
       ? state.boxTypeSets.filter((set) => set !== boxTypeSet)
       : [...state.boxTypeSets, boxTypeSet]
   })),
+
   addCustomBoxType: (boxType) => set((state) => {
     const newBoxType = { ...boxType, id: uuidv4() };
     return {
@@ -89,22 +135,40 @@ export const usePaccurateStore = create<PaccurateState>((set) => ({
       selectedCustomBoxTypeIds: [...state.selectedCustomBoxTypeIds, newBoxType.id]
     };
   }),
+
   removeCustomBoxType: (id) => set((state) => ({
     customBoxTypes: state.customBoxTypes.filter((bt) => bt.id !== id),
     selectedCustomBoxTypeIds: state.selectedCustomBoxTypeIds.filter((selectedId) => selectedId !== id)
   })),
+
   updateCustomBoxType: (id, updatedBoxType) => set((state) => ({
     customBoxTypes: state.customBoxTypes.map((bt) =>
       bt.id === id ? { ...bt, ...updatedBoxType } : bt
     )
   })),
+
   toggleCustomBoxTypeSelection: (id) => set((state) => ({
     selectedCustomBoxTypeIds: state.selectedCustomBoxTypeIds.includes(id)
       ? state.selectedCustomBoxTypeIds.filter((selectedId) => selectedId !== id)
       : [...state.selectedCustomBoxTypeIds, id]
   })),
-  addRule: (rule) => set((state) => ({ rules: [...state.rules, { ...rule, id: uuidv4() }] })),
-  removeRule: (id) => set((state) => ({ rules: state.rules.filter(r => r.id !== id) })),
+
+  addRule: (rule) => set((state) => {
+    const selectedItem = state.items.find(item => item.refId === state.selectedItemRefId);
+    if (!selectedItem) return state; // No change if no item is selected
+
+    const newRule = {
+      ...rule,
+      id: uuidv4(),
+      itemRefId: selectedItem.refId
+    };
+    return { rules: [...state.rules, newRule] };
+  }),
+
+  removeRule: (id) => set((state) => ({
+    rules: state.rules.filter(r => r.id !== id)
+  })),
+
   updateRule: (id, updatedRule) => set((state) => ({
     rules: state.rules.map(rule => rule.id === id ? { ...rule, ...updatedRule } : rule)
   })),

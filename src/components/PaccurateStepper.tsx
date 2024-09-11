@@ -33,8 +33,8 @@ function PaccurateStepper() {
     });
     const { items } = usePaccurateStore();
     return (
-        <Box p={4}>
-            <Box px={6} py={2}>
+        <Box px={4} py={2} position="relative" height="100%">
+            <Box px={6} py={1}>
                 <Stepper size='sm' index={activeStep} colorScheme='purple'>
                     {steps.map((step, index) => (
                         <Step key={index}>
@@ -99,7 +99,7 @@ function PaccurateStepper() {
             </Box>
 
             <Box
-                position="fixed"
+                position="absolute"
                 bottom="0"
                 left="0"
                 width="100%"

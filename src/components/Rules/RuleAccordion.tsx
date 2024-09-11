@@ -28,11 +28,7 @@ const ruleCategories = [
     },
     {
         name: 'Special Packing',
-        rules: ['pack-as-is', 'irregular'],
-    },
-    {
-        name: 'Advanced Packing',
-        rules: ['internal-space', 'alternate-dimensions', 'group-pack'],
+        rules: ['pack-as-is', 'alternate-dimensions'],
     },
 ];
 

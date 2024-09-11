@@ -6,15 +6,12 @@ export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
 
-        // Prepare the request body for Paccurate API
         const paccurateRequest = {
-            itemSets: body.itemSets, // Assuming this is passed from the client
-            boxTypes: body.boxTypes, // Custom box types
-            boxTypeSets: body.boxTypeSets, // Predefined box type sets
-            // Add any other required fields from the Paccurate schema
+            itemSets: body.itemSets,
+            boxTypes: body.boxTypes,
+            boxTypeSets: body.boxTypeSets,
         };
 
-        // Make the request to Paccurate API
         const paccurateResponse = await fetch(PACCURATE_API_URL, {
             method: 'POST',
             headers: {
@@ -30,7 +27,6 @@ export async function POST(request: NextRequest) {
 
         const data = await paccurateResponse.json();
 
-        // Return the Paccurate API response
         return NextResponse.json(data);
 
     } catch (error) {

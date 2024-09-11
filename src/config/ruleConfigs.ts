@@ -17,24 +17,6 @@ export interface RuleConfig {
 }
 
 export const ruleConfigs: Record<Rule['operation'], RuleConfig> = {
-    'internal-space': {
-        name: 'Internal Space',
-        options: {
-            dimensions: {
-                type: 'multiNumber',
-                label: 'Internal Dimensions (x, y, z)',
-                required: true
-            },
-            origin: {
-                type: 'multiNumber',
-                label: 'Origin (x, y, z)',
-                required: false
-            }
-        },
-        conflicts: ['pack-as-is', 'alternate-dimensions'],
-        appliesToSingleItem: true,
-        description: 'Defines an internal space within the item that can contain other items.'
-    },
     'alternate-dimensions': {
         name: 'Alternate Dimensions',
         options: {
@@ -44,7 +26,7 @@ export const ruleConfigs: Record<Rule['operation'], RuleConfig> = {
                 required: true
             }
         },
-        conflicts: ['pack-as-is', 'internal-space'],
+        conflicts: ['pack-as-is'],
         appliesToSingleItem: true,
         description: 'Specifies alternative dimensions for the item.'
     },
@@ -57,7 +39,7 @@ export const ruleConfigs: Record<Rule['operation'], RuleConfig> = {
                 required: true
             }
         },
-        conflicts: ['pack-as-is'],
+        conflicts: ['pack-as-is', 'exclude-all'],
         appliesToSingleItem: false,
         description: 'Prevents this item from being packed with specific other items.'
     },
@@ -70,7 +52,7 @@ export const ruleConfigs: Record<Rule['operation'], RuleConfig> = {
                 required: true
             }
         },
-        conflicts: ['pack-as-is'],
+        conflicts: ['pack-as-is', 'exclude'],
         appliesToSingleItem: false,
         description: 'Prevents this item from being packed with any other items.'
     },
@@ -83,32 +65,9 @@ export const ruleConfigs: Record<Rule['operation'], RuleConfig> = {
                 required: true
             }
         },
-        conflicts: ['internal-space', 'alternate-dimensions', 'exclude', 'exclude-all', 'irregular', 'group-pack'],
+        conflicts: ['alternate-dimensions', 'exclude', 'exclude-all', 'lock-orientation', 'fragile'],
         appliesToSingleItem: true,
         description: 'Packs the item exactly as specified, without any modifications.'
-    },
-    'irregular': {
-        name: 'Irregular (Roll)',
-        options: {
-            innerDiameter: {
-                type: 'number',
-                label: 'Inner Diameter',
-                required: true
-            },
-            maxDiameter: {
-                type: 'number',
-                label: 'Max Diameter',
-                required: true
-            },
-            maxWeight: {
-                type: 'number',
-                label: 'Max Weight',
-                required: true
-            }
-        },
-        conflicts: ['pack-as-is', 'internal-space'],
-        appliesToSingleItem: true,
-        description: 'Defines parameters for rolling an irregular item.'
     },
     'lock-orientation': {
         name: 'Lock Orientation',
@@ -120,7 +79,7 @@ export const ruleConfigs: Record<Rule['operation'], RuleConfig> = {
                 required: true
             }
         },
-        conflicts: [],
+        conflicts: ['pack-as-is'],
         appliesToSingleItem: true,
         description: 'Restricts the orientation of the item during packing.'
     },
@@ -137,24 +96,10 @@ export const ruleConfigs: Record<Rule['operation'], RuleConfig> = {
                 label: 'On Top Only',
                 required: false
             }
-
-        },
-        conflicts: [],
-        appliesToSingleItem: true,
-        description: 'Marks the item as fragile, with special packing considerations.'
-    },
-    'group-pack': {
-        name: 'Group Pack',
-        options: {
-            groupId: {
-                type: 'text',
-                label: 'Group ID',
-                required: true
-            }
         },
         conflicts: ['pack-as-is'],
-        appliesToSingleItem: false,
-        description: 'Groups items together for packing.'
+        appliesToSingleItem: true,
+        description: 'Marks the item as fragile, with special packing considerations.'
     }
 };
 

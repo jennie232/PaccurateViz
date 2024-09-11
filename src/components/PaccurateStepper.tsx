@@ -31,9 +31,9 @@ function PaccurateStepper() {
         index: 0,
         count: steps.length,
     });
-    const { items } = usePaccurateStore();
+    const { items, isAnyBoxTypeSelected } = usePaccurateStore();
     return (
-        <Box px={4} py={2} position="relative" height="100%">
+        <Box px={4} position="relative" height="100%" overflow="hidden">
             <Box px={6} py={1}>
                 <Stepper size='sm' index={activeStep} colorScheme='purple'>
                     {steps.map((step, index) => (
@@ -122,7 +122,7 @@ function PaccurateStepper() {
                         color="white"
                         _hover={{ bg: 'purple.700' }}
                         onClick={() => setActiveStep(activeStep + 1)}
-                        isDisabled={activeStep === steps.length - 1 || (activeStep === 0 && items.length === 0)}
+                        isDisabled={activeStep === steps.length - 1 || (activeStep === 0 && items.length === 0) || (activeStep === 1 && !isAnyBoxTypeSelected())}
                     >
                         Next
                         <ArrowForwardIcon ml={2} />

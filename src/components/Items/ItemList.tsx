@@ -36,7 +36,7 @@ export const ItemList: React.FC = () => {
                         <Th>Quantity</Th>
                         <Th>Actions</Th>
                     </Tr>
-                </Thead>
+                </Thead >
                 <Tbody>
                     {items.map((item) => (
                         <Tr key={item.refId}>
@@ -66,7 +66,7 @@ export const ItemList: React.FC = () => {
                         </Tr>
                     ))}
                 </Tbody>
-            </Table>
+            </Table >
             <GenericModal
                 isOpen={isOpen}
                 onClose={() => {

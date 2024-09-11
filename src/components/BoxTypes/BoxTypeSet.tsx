@@ -20,9 +20,9 @@ export const BoxTypeSet: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     return (
-        <VStack spacing={8} align="stretch">
+        <VStack spacing={6} align="stretch" >
             <Box>
-                <Text fontSize="2xl" fontWeight="bold">
+                <Text fontSize="xl" fontWeight="bold">
                     Create Box Types
                 </Text>
                 <Text mt={2} fontSize="sm" color="blackAlpha.600" fontWeight={500}>
@@ -43,8 +43,8 @@ export const BoxTypeSet: React.FC = () => {
                 </Flex>
             </Box>
             <Divider />
-            <Box>
-                <Flex justify="space-between" align="center" mb={4}>
+            <Box h="250px">
+                <Flex justify="space-between" align="center" mb={4} >
                     <Text mb={6} fontSize="17px" fontWeight="bold">Custom Box Types</Text>
                     <GenericModal
                         isOpen={isOpen}

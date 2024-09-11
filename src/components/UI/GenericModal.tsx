@@ -37,6 +37,7 @@ export const GenericModal: React.FC<GenericModalProps> = ({
                     bg="purple.600"
                     color="white"
                     fontSize="xs"
+                    width="fit-content"
                     _hover={{ bg: "purple.700" }}
                 >
                     {triggerButton.text}

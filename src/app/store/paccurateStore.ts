@@ -30,7 +30,7 @@ interface BoxType {
 
 export interface Rule {
   id: string;
-  operation: 'internal-space' | 'alternate-dimensions' | 'exclude' | 'exclude-all' | 'pack-as-is' | 'irregular' | 'lock-orientation' | 'fragile' | 'group-pack';
+  operation: 'alternate-dimensions' | 'exclude' | 'exclude-all' | 'pack-as-is' | 'lock-orientation' | 'fragile';
   itemRefId: number;
   itemMatch?: {
     all: boolean;
@@ -58,6 +58,7 @@ interface PaccurateState {
   updateItem: (refId: number, item: Partial<Item>) => void;
   selectItem: (refId: number) => void;
   toggleBoxTypeSet: (boxTypeSet: string) => void;
+  isAnyBoxTypeSelected: () => boolean;
   addCustomBoxType: (boxType: Omit<BoxType, 'id'>) => void;
   removeCustomBoxType: (id: string) => void;
   updateCustomBoxType: (id: string, boxType: Partial<BoxType>) => void;
@@ -154,10 +155,16 @@ export const usePaccurateStore = create<PaccurateState>((set, get) => ({
       : [...state.selectedCustomBoxTypeIds, id]
   })),
 
+  isAnyBoxTypeSelected: () => {
+    const state = get();
+    return state.boxTypeSets.length > 0 || state.selectedCustomBoxTypeIds.length > 0;
+  },
+
+
   addRule: (rule) => set((state) => {
     const selectedItem = state.items.find(item => item.refId === state.selectedItemRefId);
     if (!selectedItem) return state;
-    
+
     const validationError = validateRule(rule, state.items.length);
     if (validationError) {
       console.error(validationError);

@@ -13,7 +13,7 @@ export const ItemSet: React.FC = () => {
         <Flex flexDirection="column" gap={4}>
             <Flex mb={4} justify="space-between" align="center">
                 <Box>
-                    <Text fontSize="2xl" fontWeight="bold">
+                    <Text fontSize="xl" fontWeight="bold">
                         Create Items
                     </Text>
                     <Text mt={2} fontSize="sm" color="blackAlpha.600" fontWeight={500}>

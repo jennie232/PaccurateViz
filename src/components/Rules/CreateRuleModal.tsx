@@ -111,11 +111,11 @@ export const CreateRuleModal: React.FC<CreateRuleModalProps> = ({ isOpen, onClos
                 </ModalBody>
                 <ModalFooter>
                     <Button
-                        colorScheme="purple"
+                        bg="purple.600" color="white" _hover={{ bg: 'purple.800' }} fontSize="xs"
                         onClick={handleCreateRules}
                         isDisabled={!selectedItemRefId || selectedRules.length === 0}
                     >
-                        Add Rules
+                        Add Rule(s)
                     </Button>
                 </ModalFooter>
             </ModalContent>

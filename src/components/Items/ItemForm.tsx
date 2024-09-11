@@ -69,8 +69,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ onClose, editingItem }) => {
   const [color, setColor] = React.useState<string>(editingItem?.color || '#ff0000');
   const [formError, setFormError] = React.useState<string | null>(null);
 
-  const addItem = usePaccurateStore(state => state.addItem);
-  const updateItem = usePaccurateStore(state => state.updateItem);
+  const { addItem, updateItem } = usePaccurateStore();
 
   const onSubmit: SubmitHandler<ItemFormData> = (data) => {
     const itemData = { ...data, color, refId: data.refId || undefined };

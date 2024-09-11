@@ -1,5 +1,4 @@
 "use client";
-
 import React from 'react';
 import { Box, Text, Divider, Flex, Button } from '@chakra-ui/react';
 import { Stepper, Step, StepIndicator, StepStatus, StepTitle, StepSeparator, useSteps, StepIcon, StepNumber } from '@chakra-ui/stepper';
@@ -8,6 +7,9 @@ import { BoxTypeSet } from "@/components/BoxTypes/BoxTypeSet";
 import { testPaccurateApi } from "@/app/testPaccurateApi";
 import { ItemSet } from './Items/ItemSet';
 import { RuleDisplay } from './Rules/RuleDisplay';
+import { usePaccurateStore } from '@/app/store/paccurateStore';
+
+
 const steps = [
     { title: "Item Set" },
     { title: "Box Type" },
@@ -29,10 +31,10 @@ function PaccurateStepper() {
         index: 0,
         count: steps.length,
     });
-
+    const { items } = usePaccurateStore();
     return (
         <Box p={4}>
-            <Box p={6}>
+            <Box px={6} py={2}>
                 <Stepper size='sm' index={activeStep} colorScheme='purple'>
                     {steps.map((step, index) => (
                         <Step key={index}>
@@ -120,7 +122,7 @@ function PaccurateStepper() {
                         color="white"
                         _hover={{ bg: 'purple.700' }}
                         onClick={() => setActiveStep(activeStep + 1)}
-                        isDisabled={activeStep === steps.length - 1}
+                        isDisabled={activeStep === steps.length - 1 || (activeStep === 0 && items.length === 0)}
                     >
                         Next
                         <ArrowForwardIcon ml={2} />

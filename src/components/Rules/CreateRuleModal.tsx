@@ -9,11 +9,18 @@ import {
     ModalCloseButton,
     Button,
     VStack,
+    Text,
+    Alert,
+    AlertIcon,
+    AlertTitle,
+    AlertDescription,
+    Box,
 } from '@chakra-ui/react';
 import { ItemSelector } from './ItemSelector';
 import { RuleAccordion } from './RuleAccordion';
 import { usePaccurateStore } from '@/app/store/paccurateStore';
 import { Rule } from '@/app/store/paccurateStore';
+import { ruleConfigs } from '@/config/ruleConfigs';
 
 interface CreateRuleModalProps {
     isOpen: boolean;
@@ -22,36 +29,78 @@ interface CreateRuleModalProps {
 
 export const CreateRuleModal: React.FC<CreateRuleModalProps> = ({ isOpen, onClose }) => {
     const [selectedRules, setSelectedRules] = useState<Rule[]>([]);
-    const { addRule, items, selectedItemRefId } = usePaccurateStore()
+    const [validationError, setValidationError] = useState<React.ReactNode | null>(null);
+    const { addRule, items, selectedItemRefId } = usePaccurateStore();
 
-    const handleCreateRules = useCallback(() => {
-        if (selectedItemRefId) {
-            const selectedItem = items.find(item => item.refId === selectedItemRefId);
-            if (selectedItem) {
-                selectedRules.forEach(rule => {
-                    addRule({
-                        operation: rule.operation,
-                        itemRefId: selectedItem.refId,
-                        options: rule.options,
-                    });
+    const validateRules = useCallback(() => {
+        let hasError = false;
+        const errorMessages: React.ReactNode[] = [];
+
+        selectedRules.forEach(rule => {
+            const config = ruleConfigs[rule.operation];
+            if (config.options) {
+                Object.entries(config.options).forEach(([key, option]) => {
+                    if (option.required && (!rule.options || rule.options[key] === undefined || rule.options[key] === '')) {
+                        hasError = true;
+                        errorMessages.push(
+                            <div key={`${rule.operation}-${key}`}>{`${config.name}: ${option.label} is required`}</div>
+                        );
+                    }
                 });
             }
-            onClose();
-            setSelectedRules([]);
+        });
+
+        if (hasError) {
+            setValidationError(
+                <Alert status="error">
+                    <AlertIcon />
+                    <AlertTitle mr={4}>Validation Error</AlertTitle>
+                    <AlertDescription fontSize="sm" >{errorMessages}</AlertDescription>
+                </Alert>
+            );
+        } else {
+            setValidationError(null);
         }
-    }, [selectedItemRefId, selectedRules, items, addRule, onClose]);
+
+        return !hasError;
+    }, [selectedRules]);
+
+    const handleCreateRules = useCallback(() => {
+        if (validateRules()) {
+            if (selectedItemRefId) {
+                const selectedItem = items.find(item => item.refId === selectedItemRefId);
+                if (selectedItem) {
+                    selectedRules.forEach(rule => {
+                        addRule({
+                            operation: rule.operation,
+                            itemRefId: selectedItem.refId,
+                            options: rule.options,
+                        });
+                    });
+                }
+                onClose();
+                setSelectedRules([]);
+                setValidationError(null);
+            }
+        }
+    }, [selectedItemRefId, selectedRules, items, addRule, onClose, validateRules]);
 
     const handleUpdateRules = useCallback((updatedRules: Rule[]) => {
         setSelectedRules(updatedRules);
+        setValidationError(null); // Changed from setValidationErrors([])
     }, []);
-
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+        <Modal isOpen={isOpen} onClose={onClose} size="3xl">
             <ModalOverlay />
-            <ModalContent p={4}>
+            <ModalContent maxHeight="80vh" display="flex" flexDirection="column">
                 <ModalHeader>Create Item Rule</ModalHeader>
                 <ModalCloseButton />
-                <ModalBody>
+                {validationError && (
+                    <Box px={6} pt={2}>
+                        {validationError}
+                    </Box>
+                )}
+                <ModalBody overflowY="auto" flex="1">
                     <VStack spacing={6} alignItems="flex-start">
                         <ItemSelector />
                         <RuleAccordion
@@ -66,7 +115,7 @@ export const CreateRuleModal: React.FC<CreateRuleModalProps> = ({ isOpen, onClos
                         onClick={handleCreateRules}
                         isDisabled={!selectedItemRefId || selectedRules.length === 0}
                     >
-                        Create Rules
+                        Add Rules
                     </Button>
                 </ModalFooter>
             </ModalContent>

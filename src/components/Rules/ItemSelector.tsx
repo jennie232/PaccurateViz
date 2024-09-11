@@ -34,6 +34,7 @@ export const ItemSelector: React.FC = () => {
                     onChange={(e) => selectItem(Number(e.target.value))}
                     fontSize="sm"
                     height="30px"
+                    bg="white"
                     color="gray.500"
                 >
                     {items.map((item) => (

@@ -10,10 +10,11 @@ export const RuleModalCard: React.FC<RuleModalCardProps> = ({ title, children })
     return (
         <Card
             variant="outline"
-            borderColor="gray.200"
+            border="0px solid"
             borderRadius="md"
             width="100%"
-            maxWidth="600px"
+            maxWidth="900px"
+            bg="#f7f7fb"
         >
             <CardBody p={0}>
                 <VStack gap={0} align="stretch">

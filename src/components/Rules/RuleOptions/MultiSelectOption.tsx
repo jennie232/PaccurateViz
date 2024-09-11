@@ -6,11 +6,12 @@ interface MultiSelectOptionProps {
     value: string[];
     onChange: (value: string[]) => void;
     choices: string[];
+    isRequired?: boolean;
 }
 
-export const MultiSelectOption: React.FC<MultiSelectOptionProps> = ({ label, value, onChange, choices }) => (
-    <FormControl>
-        <FormLabel>{label}</FormLabel>
+export const MultiSelectOption: React.FC<MultiSelectOptionProps> = ({ label, value, onChange, choices, isRequired = false }) => (
+    <FormControl isRequired={isRequired}>
+        <FormLabel fontSize="xs">{label}</FormLabel>
         <CheckboxGroup value={value} onChange={onChange}>
             <VStack align="start">
                 {choices.map((choice) => (

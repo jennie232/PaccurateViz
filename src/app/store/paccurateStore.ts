@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
+import { validateRule } from "@/config/ruleConfigs";
 
 interface Item {
   refId: number;
@@ -155,8 +156,13 @@ export const usePaccurateStore = create<PaccurateState>((set, get) => ({
 
   addRule: (rule) => set((state) => {
     const selectedItem = state.items.find(item => item.refId === state.selectedItemRefId);
-    if (!selectedItem) return state; // No change if no item is selected
-
+    if (!selectedItem) return state;
+    
+    const validationError = validateRule(rule, state.items.length);
+    if (validationError) {
+      console.error(validationError);
+      return state; // No change if rule is invalid
+    }
     const newRule = {
       ...rule,
       id: uuidv4(),

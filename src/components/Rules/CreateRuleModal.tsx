@@ -9,7 +9,6 @@ import {
     ModalCloseButton,
     Button,
     VStack,
-    Text,
     Alert,
     AlertIcon,
     AlertTitle,
@@ -55,7 +54,7 @@ export const CreateRuleModal: React.FC<CreateRuleModalProps> = ({ isOpen, onClos
                 <Alert status="error">
                     <AlertIcon />
                     <AlertTitle mr={4}>Validation Error</AlertTitle>
-                    <AlertDescription fontSize="sm" >{errorMessages}</AlertDescription>
+                    <AlertDescription>{errorMessages}</AlertDescription>
                 </Alert>
             );
         } else {
@@ -70,25 +69,39 @@ export const CreateRuleModal: React.FC<CreateRuleModalProps> = ({ isOpen, onClos
             if (selectedItemRefId) {
                 const selectedItem = items.find(item => item.refId === selectedItemRefId);
                 if (selectedItem) {
+                    let hasError = false;
                     selectedRules.forEach(rule => {
-                        addRule({
+                        const result = addRule({
                             operation: rule.operation,
                             itemRefId: selectedItem.refId,
                             options: rule.options,
                         });
+                        if (result.error) {
+                            setValidationError(
+                                <Alert status="error">
+                                    <AlertIcon />
+                                    <AlertTitle mr={4}>Error</AlertTitle>
+                                    <AlertDescription>{result.error}</AlertDescription>
+                                </Alert>
+                            );
+                            hasError = true;
+                        }
                     });
+                    if (!hasError) {
+                        onClose();
+                        setSelectedRules([]);
+                        setValidationError(null);
+                    }
                 }
-                onClose();
-                setSelectedRules([]);
-                setValidationError(null);
             }
         }
     }, [selectedItemRefId, selectedRules, items, addRule, onClose, validateRules]);
 
     const handleUpdateRules = useCallback((updatedRules: Rule[]) => {
         setSelectedRules(updatedRules);
-        setValidationError(null); // Changed from setValidationErrors([])
+        setValidationError(null);
     }, []);
+
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="3xl">
             <ModalOverlay />
@@ -115,7 +128,7 @@ export const CreateRuleModal: React.FC<CreateRuleModalProps> = ({ isOpen, onClos
                         onClick={handleCreateRules}
                         isDisabled={!selectedItemRefId || selectedRules.length === 0}
                     >
-                        Add Rule(s)
+                        Add Rules
                     </Button>
                 </ModalFooter>
             </ModalContent>

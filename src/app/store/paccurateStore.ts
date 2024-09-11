@@ -63,7 +63,7 @@ interface PaccurateState {
   removeCustomBoxType: (id: string) => void;
   updateCustomBoxType: (id: string, boxType: Partial<BoxType>) => void;
   toggleCustomBoxTypeSelection: (id: string) => void;
-  addRule: (rule: Omit<Rule, 'id'>) => void;
+  addRule: (rule: Omit<Rule, 'id'>) => { error?: string };
   removeRule: (id: string) => void;
   updateRule: (id: string, rule: Partial<Rule>) => void;
 }
@@ -161,22 +161,32 @@ export const usePaccurateStore = create<PaccurateState>((set, get) => ({
   },
 
 
-  addRule: (rule) => set((state) => {
+  addRule: (rule) => {
+    const state = get();
     const selectedItem = state.items.find(item => item.refId === state.selectedItemRefId);
-    if (!selectedItem) return state;
+    if (!selectedItem) return { error: "No item selected" };
 
     const validationError = validateRule(rule, state.items.length);
     if (validationError) {
-      console.error(validationError);
-      return state; // No change if rule is invalid
+      return { error: validationError };
     }
+
+    const existingRule = state.rules.find(r =>
+      r.itemRefId === selectedItem.refId && r.operation === rule.operation
+    );
+    if (existingRule) {
+      return { error: `A ${rule.operation} rule already exists for this item` };
+    }
+
     const newRule = {
       ...rule,
       id: uuidv4(),
       itemRefId: selectedItem.refId
     };
-    return { rules: [...state.rules, newRule] };
-  }),
+
+    set(state => ({ rules: [...state.rules, newRule] }));
+    return {};
+  },
 
   removeRule: (id) => set((state) => ({
     rules: state.rules.filter(r => r.id !== id)

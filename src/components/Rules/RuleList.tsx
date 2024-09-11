@@ -2,29 +2,12 @@ import React from 'react';
 import { VStack, Text, Box, Image, Button, Icon, useDisclosure, SimpleGrid, Flex } from '@chakra-ui/react';
 import { RuleCard } from './RuleCard';
 import { usePaccurateStore } from '@/app/store/paccurateStore';
-import { AddIcon } from '@chakra-ui/icons';
-import { CreateRuleModal } from './CreateRuleModal';
 
 export const RuleList: React.FC = () => {
     const { rules, updateRule, removeRule, items } = usePaccurateStore();
-    const { isOpen, onOpen, onClose } = useDisclosure();
 
     return (
         <Box>
-            {/* {items.length > 0 && (
-                <Flex justifyContent="flex-end" mb={4}>
-                    <Button
-                        borderRadius="full"
-                        bg="purple.600"
-                        color="white"
-                        fontSize="xs"
-                        _hover={{ bg: "purple.700" }}
-                        onClick={onOpen}
-                    >
-                        Create Rule <Icon as={AddIcon} ml={2} />
-                    </Button>
-                </Flex>
-            )} */}
             <Box bg="purple.50" width="100%" height="530px" borderRadius="md" overflowY="auto">
                 {rules.length === 0 ? (
                     <VStack gap={3} justifyContent="center" height="100%">
@@ -58,7 +41,6 @@ export const RuleList: React.FC = () => {
                     </SimpleGrid>
                 )}
             </Box>
-            {/* <CreateRuleModal isOpen={isOpen} onClose={onClose} /> */}
         </Box>
     );
 };

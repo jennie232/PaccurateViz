@@ -77,7 +77,7 @@ export const BoxTypeForm: React.FC<BoxTypeFormProps> = ({ onClose, editingBoxTyp
         <form onSubmit={handleSubmit(onSubmit)}>
             <VStack spacing={6} align="stretch">
                 <FormControl isInvalid={!!errors.name}>
-                    <FormLabel fontWeight="bold" fontSize="sm">Name</FormLabel>
+                    <FormLabel fontWeight="bold" fontSize="sm">Name (optional)</FormLabel>
                     <Input {...register('name')} />
                     <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
                 </FormControl>

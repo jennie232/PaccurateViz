@@ -9,7 +9,7 @@ import {
     Tooltip,
 } from '@chakra-ui/react';
 import { RuleBox } from './RuleBox';
-import { ruleConfigs, getApplicableRules, checkRuleConflicts } from '@/config/ruleConfigs';
+import { ruleConfigs, getApplicableRules } from '@/config/ruleConfigs';
 import { usePaccurateStore } from '@/app/store/paccurateStore';
 import { Rule } from '@/app/types/paccurateTypes';
 import { RuleModalCard } from './RuleModalCard';

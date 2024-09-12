@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, Thead, Tbody, Tr, Th, Td, Text, Box, IconButton, Image, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody } from '@chakra-ui/react';
+import { Table, Thead, Tbody, Tr, Th, Td, Box, IconButton } from '@chakra-ui/react';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { usePaccurateStore } from '@/app/store/paccurateStore';
 import { EmptyState } from '../UI/EmptyState';

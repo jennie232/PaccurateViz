@@ -54,8 +54,8 @@ export const CreateRuleModal: React.FC<CreateRuleModalProps> = ({ isOpen, onClos
                     <AlertTitle mr={4}>Validation Error</AlertTitle>
                     <AlertDescription>
                         <VStack align="start">
-                            {errors.map((error) => (
-                                <Text>{error}</Text>
+                            {errors.map((error, index) => (
+                                <Text key={`error-${index}`}>{error}</Text>
                             ))}
                         </VStack>
                     </AlertDescription>

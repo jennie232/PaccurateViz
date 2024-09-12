@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
             itemSets: body.itemSets,
             boxTypes: body.boxTypes,
             boxTypeSets: body.boxTypeSets,
-            rules: body.rules, // The rules are already in the correct format
+            rules: body.rules.map((rule: any) => rule.apiFormatted),
         };
 
         console.log(paccurateRequest);

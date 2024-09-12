@@ -32,11 +32,6 @@ export const PackingResultDetails: React.FC<PackingResultDetailsProps> = ({ resu
                             <Td>{box.price}</Td>
                             <Td>{box.weightUtilization.toFixed(4)}%</Td>
                             <Td>{box.volumeUtilization.toFixed(4)}%</Td>
-                            {/* <Td>{box.lenItems}</Td>
-                            <Td>{box.price}</Td>
-                            <Td>{box.weightUsed.toFixed(2)}</Td>
-                            <Td>{`${(box.weightUsed / box.weightMax * 100).toFixed(2)}% (${box.weightUsed.toFixed(2)} / ${box.weightMax.toFixed(2)})`}</Td>
-                            <Td>{`${(box.volumeUsed / box.volumeMax * 100).toFixed(2)}% (${box.volumeUsed.toFixed(2)} / ${box.volumeMax.toFixed(2)})`}</Td> */}
                         </Tr>
                     ))}
                 </Tbody>

@@ -72,11 +72,18 @@ export const CreateRuleModal: React.FC<CreateRuleModalProps> = ({ isOpen, onClos
         if (validateRules()) {
             let hasError = false;
             selectedRules.forEach(rule => {
-                const result = addRule({
-                    operation: rule.operation,
-                    itemRefId: selectedItemRefId!,
-                    options: rule.options,
-                });
+                const formattedRule = {
+                    ...rule,
+                    options: {
+                        ...rule.options,
+                        excludedItems: rule.operation === 'exclude' && rule.options?.excludedItems
+                            ? rule.options.excludedItems.map((item: string | number) =>
+                                typeof item === 'string' ? parseInt(item.split('|')[1]) : item
+                            )
+                            : rule.options?.excludedItems
+                    }
+                };
+                const result = addRule(formattedRule);
                 if (result.error) {
                     setValidationError(
                         <Alert status="error">

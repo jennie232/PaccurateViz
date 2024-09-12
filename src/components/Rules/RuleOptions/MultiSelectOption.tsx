@@ -8,22 +8,46 @@ interface MultiSelectOptionProps {
     choices: string[];
     isRequired?: boolean;
     parseChoice?: (choice: string) => string;
+    parseValue?: (value: string) => string | number;
 }
 
-export const MultiSelectOption: React.FC<MultiSelectOptionProps> = ({ label, value, onChange, choices, isRequired = false, parseChoice = (choice) => choice }) => (
-    <FormControl isRequired={isRequired}>
-        <FormLabel fontSize="sm">{label}</FormLabel>
-        <CheckboxGroup
-            value={value.map(String)}
-            onChange={(newValue) => onChange(newValue.map(v => isNaN(Number(v)) ? v : Number(v)))}
-        >
+export const MultiSelectOption: React.FC<MultiSelectOptionProps> = ({
+    label,
+    value,
+    onChange,
+    choices,
+    isRequired = false,
+    parseChoice = (choice) => choice,
+    parseValue = (value) => value,
+}) => {
+    const handleChange = (checkedValue: string, isChecked: boolean) => {
+        const parsedValue = parseValue(checkedValue);
+        if (isChecked) {
+            onChange([...value, parsedValue]);
+        } else {
+            onChange(value.filter(v => String(v) !== String(parsedValue)));
+        }
+    };
+
+    return (
+        <FormControl isRequired={isRequired}>
+            <FormLabel fontSize="sm">{label}</FormLabel>
             <VStack align="start">
-                {choices.map((choice, index) => (
-                    <Checkbox key={`${choice}-${index}`} value={String(index)} colorScheme="purple">
-                        <Text fontSize="xs">{parseChoice(choice)}</Text>
-                    </Checkbox>
-                ))}
+                {choices.map((choice) => {
+                    const parsedValue = parseValue(choice);
+                    const isChecked = value.some(v => String(v) === String(parsedValue));
+                    return (
+                        <Checkbox
+                            key={choice}
+                            isChecked={isChecked}
+                            onChange={(e) => handleChange(choice, e.target.checked)}
+                            colorScheme="purple"
+                        >
+                            <Text fontSize="xs">{parseChoice(choice)}</Text>
+                        </Checkbox>
+                    );
+                })}
             </VStack>
-        </CheckboxGroup>
-    </FormControl>
-);
+        </FormControl>
+    );
+};

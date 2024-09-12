@@ -26,6 +26,7 @@ export const RuleBox: React.FC<RuleBoxProps> = ({
     options,
     onOptionChange,
     getOptionChoices,
+    parseOptionChoice
 }) => {
     const config: RuleConfig = ruleConfigs[rule];
 
@@ -52,8 +53,18 @@ export const RuleBox: React.FC<RuleBoxProps> = ({
                     <MultiSelectOption
                         key={key}
                         {...commonProps}
-                        choices={getOptionChoices(key)}
+                        choices={choices}
                         value={options[key] ?? []}
+                        parseChoice={parseOptionChoice}
+                        parseValue={(value) => {
+                            if (rule === 'exclude' && key === 'excludedItems') {
+                                return parseInt(value.split('|')[1]);
+                            }
+                            if (rule === 'lock-orientation' && key === 'freeAxes') {
+                                return parseInt(value.split(' ')[0]);
+                            }
+                            return value;
+                        }}
                     />
                 );
             case 'toggle':

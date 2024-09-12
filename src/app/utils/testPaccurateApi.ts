@@ -1,4 +1,4 @@
-import { usePaccurateStore } from './store/paccurateStore';
+import { usePaccurateStore } from '../store/paccurateStore';
 
 export async function testPaccurateApi() {
     const state = usePaccurateStore.getState();

@@ -5,9 +5,9 @@ import { Image, Text, VStack, Flex } from '@chakra-ui/react';
 interface EmptyStateProps {
     subject: string;
     height?: string;
+    message?: string;
 }
-
-export const EmptyState: React.FC<EmptyStateProps> = ({ subject, height = '100%' }) => {
+export const EmptyState: React.FC<EmptyStateProps> = ({ subject, height = '100%', message }) => {
     return (
         <Flex
             height={height}
@@ -33,7 +33,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ subject, height = '100%'
                     You have no {subject.toLowerCase()}s yet.
                 </Text>
                 <Text color="gray.500" fontSize={["xs", "sm"]}>
-                    Start by clicking the 'Add {subject}' button above.
+                    {message || `Start by clicking the 'Add ${subject}' button above.`}
                 </Text>
             </VStack>
         </Flex>

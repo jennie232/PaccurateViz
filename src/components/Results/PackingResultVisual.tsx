@@ -36,7 +36,7 @@ export const PackingResultVisual: React.FC<PackingResultVisualProps> = ({ result
                 >
                     <Box
                         as="div"
-                        w="180px"
+                        w="160px"
                         dangerouslySetInnerHTML={{ __html: addOutlineToSvg(svg) }}
                     />
                 </Box>

@@ -87,10 +87,14 @@ export const RuleAccordion: React.FC<RuleAccordionProps> = ({
         if (ruleOperation === 'exclude' && optionKey === 'excludedItems') {
             return items
                 .filter((item) => item.refId !== selectedItemRefId)
-                .map((item) => item.name || `Item ${item.refId}`);
+                .map((item) => `${item.name || `Item ${item.refId}`}|${item.refId}`);
         }
         return ruleConfigs[ruleOperation].options?.[optionKey]?.choices || [];
     }, [items, selectedItemRefId]);
+
+    const parseOptionChoice = useCallback((choice: string) => {
+        return choice.split('|')[0];
+    }, []);
 
     return (
         <RuleModalCard title="2. Select Rules">
@@ -126,7 +130,8 @@ export const RuleAccordion: React.FC<RuleAccordionProps> = ({
                                                 onOptionChange={(optionKey, value) =>
                                                     handleOptionChange(ruleOperation, optionKey, value)
                                                 }
-                                                getOptionChoices={(optionKey) => getOptionChoices(ruleOperation, optionKey) || []}
+                                                getOptionChoices={(optionKey) => getOptionChoices(ruleOperation, optionKey)}
+                                                parseOptionChoice={parseOptionChoice}
 
                                             />
                                         </Box>

@@ -14,7 +14,6 @@ const steps = [
     { title: "Item Set" },
     { title: "Box Type" },
     { title: "Rules" },
-    { title: "Rate Tables" },
     { title: "Create Pack" },
 ];
 
@@ -103,9 +102,6 @@ function PaccurateStepper() {
                         <RuleDisplay />
                     )}
                     {activeStep === 3 && (
-                        <Text>Rate Tables content will go here</Text>
-                    )}
-                    {activeStep === 4 && (
                         <ResponseDisplay />
                     )}
                 </Box>
@@ -115,7 +111,7 @@ function PaccurateStepper() {
                     px={6}
                 >
                     <Divider />
-                    <Flex my={2} p={4} justify="space-between">
+                    <Flex mt={2} px={2} py={2} justify="space-between">
                         <Button
                             fontSize="sm"
                             onClick={() => setActiveStep(activeStep - 1)}

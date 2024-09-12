@@ -82,7 +82,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ onClose, editingItem }) => {
     } else {
       result = addItem(itemData);
     }
-    console.log(result);
+
     if (result && 'error' in result) {
       setFormError(result.error);
       setError('refId', { type: 'manual', message: result.error });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, VStack, HStack, Divider } from '@chakra-ui/react';
+import { Box, HStack, Divider, Flex } from '@chakra-ui/react';
 import { PackingResultSummary } from './PackingResultSummary';
 import { PackingResultDetails } from './PackingResultDetails';
 import { PackingResultVisual } from './PackingResultVisual';
@@ -11,24 +11,17 @@ interface PackingResultContainerProps {
 
 export const PackingResultContainer: React.FC<PackingResultContainerProps> = ({ result }) => {
     return (
-
-        <Box h="300px" w="100%" borderWidth={1} borderRadius="lg" p={4}>
-
-            <VStack spacing={4} align="stretch" justifyContent="center" >
-
-                <HStack p={3} spacing={2} align="start">
-                    <Box>
-                        <PackingResultVisual result={result} />
-                    </Box>
-                    <Box>
-                        <PackingResultSummary result={result} />
-                        <Divider mb={4} />
-
-                        <PackingResultDetails result={result} />
-                    </Box>
-
-                </HStack>
-            </VStack>
+        <Box h="auto" w="100%" borderWidth={1} borderRadius="lg" px={4} py={8}>
+            <Flex direction="row">
+                <Box width="35%" pr={2}>
+                    <PackingResultVisual result={result} />
+                </Box>
+                <Box width="65%" pl={2}>
+                    <PackingResultSummary result={result} />
+                    <Divider my={4} />
+                    <PackingResultDetails result={result} />
+                </Box>
+            </Flex>
         </Box>
     );
 };

@@ -148,7 +148,7 @@ export const ruleConfigs: Record<Rule['operation'], RuleConfig> = {
 export const getApplicableRules = (itemCount: number): Rule['operation'][] => {
     return (Object.entries(ruleConfigs) as [Rule['operation'], RuleConfig][])
         .filter(([_, config]) => itemCount > 1 || config.appliesToSingleItem)
-        .map(([key, _]) => key);
+        .map(([key]) => key);
 };
 
 export const validateRule = (rule: Omit<Rule, 'id'>, itemCount: number): string | null => {

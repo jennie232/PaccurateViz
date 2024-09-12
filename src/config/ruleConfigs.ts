@@ -147,7 +147,7 @@ export const ruleConfigs: Record<Rule['operation'], RuleConfig> = {
 
 export const getApplicableRules = (itemCount: number): Rule['operation'][] => {
     return (Object.entries(ruleConfigs) as [Rule['operation'], RuleConfig][])
-        .filter(([_, config]) => itemCount > 1 || config.appliesToSingleItem)
+        .filter(([, config]) => itemCount > 1 || config.appliesToSingleItem)
         .map(([key]) => key);
 };
 

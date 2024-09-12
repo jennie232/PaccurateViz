@@ -3,8 +3,8 @@ import { Box, Flex, Image, Spacer, Text } from '@chakra-ui/react';
 
 export const NavBar: React.FC = () => {
     return (
-        <Box as="nav" bg="white" boxShadow="md" py={5} px={4}>
-            <Flex align="flex-start" maxW="container.xl" mx="9">
+        <Box as="nav" bg="white" boxShadow="md" py={3} px={2}>
+            <Flex align="flex-start" maxW="container.xl" mx="4">
                 <Image
                     src="/paccurate-logo.svg"
                     alt="Paccurate Logo"

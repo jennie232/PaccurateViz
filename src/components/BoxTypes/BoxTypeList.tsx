@@ -4,6 +4,7 @@ import {
     Table,
     Thead,
     Tbody,
+    Box,
     Tr,
     Th,
     Td,
@@ -30,12 +31,14 @@ export const BoxTypeList: React.FC = () => {
 
     if (customBoxTypes.length === 0) {
         return (
-            <EmptyState subject="Custom Box Type" />
+            <Box height="250px">
+                <EmptyState subject="Custom Box Type" />
+            </Box>
         );
     }
     return (
         <>
-            <Table variant="simple">
+            <Table variant="simple" fontSize="13px">
                 <Thead bg="gray.100">
                     <Tr>
                         <Th>Name</Th>

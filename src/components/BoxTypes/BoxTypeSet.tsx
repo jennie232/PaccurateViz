@@ -30,7 +30,7 @@ export const BoxTypeSet: React.FC = () => {
                 </Text>
             </Box>
             <Box>
-                <Text mb={6} fontSize="17px" fontWeight="bold">Predefined Box Types</Text>
+                <Text mb={3} fontSize="15px" fontWeight="bold">Predefined Box Types</Text>
                 <Flex wrap="wrap" gap={6}>
                     {predefinedBoxTypes.map((boxType) => (
                         <BoxTypeCard
@@ -43,9 +43,9 @@ export const BoxTypeSet: React.FC = () => {
                 </Flex>
             </Box>
             <Divider />
-            <Box h="250px">
-                <Flex justify="space-between" align="center" mb={4} >
-                    <Text mb={6} fontSize="17px" fontWeight="bold">Custom Box Types</Text>
+            <Box>
+                <Flex justify="space-between" align="center" mb={2} >
+                    <Text mb={6} fontSize="15px" fontWeight="bold">Custom Box Types</Text>
                     <GenericModal
                         isOpen={isOpen}
                         onClose={onClose}

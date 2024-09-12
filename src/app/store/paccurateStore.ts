@@ -1,72 +1,8 @@
 import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
-import { validateRule } from "@/config/ruleConfigs";
+import { validateRule, ruleConfigs } from "@/config/ruleConfigs";
+import { Item, BoxType, Rule, InternalRule, PaccurateState } from "@/app/types/paccurateTypes";
 
-interface Item {
-  refId: number;
-  name?: string | null;
-  color?: string;
-  weight: number;
-  dimensions: {
-    x: number;
-    y: number;
-    z: number;
-  };
-  quantity: number;
-}
-
-interface BoxType {
-  id: string;
-  name?: string | null;
-  weightMax: number;
-  dimensions: {
-    x: number;
-    y: number;
-    z: number;
-  };
-  weightTare?: number | null;
-  price?: number | null;
-}
-
-export interface Rule {
-  id: string;
-  operation: 'alternate-dimensions' | 'exclude' | 'exclude-all' | 'pack-as-is' | 'lock-orientation' | 'fragile';
-  itemRefId: number;
-  itemMatch?: {
-    all: boolean;
-    property?: 'refId' | 'name';
-    expression?: string;
-    expressions?: string[];
-    negate?: boolean;
-  };
-  targetItemRefIds?: number[];
-  options?: {
-    [key: string]: any;
-  };
-}
-
-interface PaccurateState {
-  items: Item[];
-  selectedItemRefId: number | null;
-  boxTypeSets: string[];
-  customBoxTypes: BoxType[];
-  selectedCustomBoxTypeIds: string[];
-  rules: Rule[];
-  nextRefId: number;
-  addItem: (item: Omit<Item, 'refId'> & { refId?: number }) => { error: string } | void;
-  removeItem: (refId: number) => void;
-  updateItem: (refId: number, item: Partial<Item>) => void;
-  selectItem: (refId: number) => void;
-  toggleBoxTypeSet: (boxTypeSet: string) => void;
-  isAnyBoxTypeSelected: () => boolean;
-  addCustomBoxType: (boxType: Omit<BoxType, 'id'>) => void;
-  removeCustomBoxType: (id: string) => void;
-  updateCustomBoxType: (id: string, boxType: Partial<BoxType>) => void;
-  toggleCustomBoxTypeSelection: (id: string) => void;
-  addRule: (rule: Omit<Rule, 'id'>) => { error?: string };
-  removeRule: (id: string) => void;
-  updateRule: (id: string, rule: Partial<Rule>) => void;
-}
 
 export const usePaccurateStore = create<PaccurateState>((set, get) => ({
   items: [],
@@ -75,7 +11,7 @@ export const usePaccurateStore = create<PaccurateState>((set, get) => ({
   customBoxTypes: [],
   selectedCustomBoxTypeIds: [],
   rules: [],
-  nextRefId: 1, // Start with 1 as the first refId
+  nextRefId: 1,
 
   addItem: (item) => {
     let error: string | undefined;
@@ -87,7 +23,7 @@ export const usePaccurateStore = create<PaccurateState>((set, get) => ({
       } else {
         if (state.items.some(existingItem => existingItem.refId === refId)) {
           error = 'RefId must be unique';
-          return state; // Return current state without changes
+          return state;
         }
         state.nextRefId = Math.max(state.nextRefId, refId + 1);
       }
@@ -110,7 +46,7 @@ export const usePaccurateStore = create<PaccurateState>((set, get) => ({
         updatedItem.refId !== refId &&
         state.items.some(item => item.refId === updatedItem.refId)) {
         error = 'RefId must be unique';
-        return state; // Return current state without changes
+        return state;
       }
 
       return {
@@ -178,13 +114,19 @@ export const usePaccurateStore = create<PaccurateState>((set, get) => ({
       return { error: `A ${rule.operation} rule already exists for this item` };
     }
 
-    const newRule = {
+    const id = uuidv4();
+    const fullRule: InternalRule = {
       ...rule,
-      id: uuidv4(),
-      itemRefId: selectedItem.refId
+      id,
+      itemRefId: selectedItem.refId,
+      apiFormatted: ruleConfigs[rule.operation].formatForAPI({
+        ...rule,
+        id,
+        itemRefId: selectedItem.refId
+      }, state.items)
     };
 
-    set(state => ({ rules: [...state.rules, newRule] }));
+    set(state => ({ rules: [...state.rules, fullRule] }));
     return {};
   },
 
@@ -193,6 +135,20 @@ export const usePaccurateStore = create<PaccurateState>((set, get) => ({
   })),
 
   updateRule: (id, updatedRule) => set((state) => ({
-    rules: state.rules.map(rule => rule.id === id ? { ...rule, ...updatedRule } : rule)
+    rules: state.rules.map(rule => {
+      if (rule.id === id) {
+        const updated: InternalRule = {
+          ...rule,
+          ...updatedRule,
+          apiFormatted: ruleConfigs[rule.operation].formatForAPI({
+            ...rule,
+            ...updatedRule
+          }, state.items)
+        };
+        return updated;
+      }
+      return rule;
+    })
   })),
+
 }));

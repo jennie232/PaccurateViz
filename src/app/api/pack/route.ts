@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { usePaccurateStore } from '@/app/store/paccurateStore';
 
 const PACCURATE_API_URL = 'https://api.paccurate.io/';
 
@@ -10,8 +11,10 @@ export async function POST(request: NextRequest) {
             itemSets: body.itemSets,
             boxTypes: body.boxTypes,
             boxTypeSets: body.boxTypeSets,
+            rules: body.rules, // The rules are already in the correct format
         };
 
+        console.log(paccurateRequest);
         const paccurateResponse = await fetch(PACCURATE_API_URL, {
             method: 'POST',
             headers: {
@@ -19,6 +22,7 @@ export async function POST(request: NextRequest) {
                 'Authorization': `apikey ${process.env.PACCURATE_API_KEY}`,
             },
             body: JSON.stringify(paccurateRequest),
+
         });
 
         if (!paccurateResponse.ok) {

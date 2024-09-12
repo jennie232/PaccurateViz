@@ -13,7 +13,7 @@ export const NumberOption: React.FC<NumberOptionProps> = ({ label, value, onChan
     <FormControl isRequired={isRequired}>
         <FormLabel fontSize="xs">{label}</FormLabel>
         <NumberInput value={value} onChange={(_, value) => onChange(value)}>
-            <NumberInputField placeholder={placeholder} />
+            <NumberInputField height="28px" placeholder={placeholder} />
         </NumberInput>
     </FormControl>
 );

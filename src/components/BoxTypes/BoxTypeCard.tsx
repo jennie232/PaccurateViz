@@ -21,7 +21,7 @@ export const BoxTypeCard: React.FC<BoxTypeCardProps> = ({ name, icon, descriptio
             onClick={onToggle}
             bg={isSelected ? "purple.50" : "white"}
             position="relative"
-            width="200px"
+            width="170px"
         >
             <Checkbox
                 isChecked={isSelected}
@@ -33,8 +33,8 @@ export const BoxTypeCard: React.FC<BoxTypeCardProps> = ({ name, icon, descriptio
 
             />
             <VStack spacing={2} align="center">
-                <Icon as={icon} boxSize="50px" />
-                <Text fontWeight="bold">{name}</Text>
+                <Icon as={icon} boxSize="40px" />
+                <Text fontSize="14px" fontWeight="bold">{name}</Text>
                 <Text fontSize="xs" textAlign="center">{description}</Text>
             </VStack>
         </Box>

@@ -1,4 +1,3 @@
-// src/components/Rules/RuleAccordion.tsx
 import React, { useState, useEffect, useCallback } from 'react';
 import {
     Accordion,
@@ -10,26 +9,15 @@ import {
     Tooltip,
 } from '@chakra-ui/react';
 import { RuleBox } from './RuleBox';
-import { ruleConfigs, getApplicableRules } from '@/config/ruleConfigs';
+import { ruleConfigs, getApplicableRules, checkRuleConflicts } from '@/config/ruleConfigs';
 import { usePaccurateStore } from '@/app/store/paccurateStore';
-import { Rule } from '@/app/store/paccurateStore';
+import { Rule } from '@/app/types/paccurateTypes';
 import { RuleModalCard } from './RuleModalCard';
 
-
-
 const ruleCategories = [
-    {
-        name: 'Item Handling',
-        rules: ['fragile', 'lock-orientation'],
-    },
-    {
-        name: 'Item Interaction',
-        rules: ['exclude', 'exclude-all'],
-    },
-    {
-        name: 'Special Packing',
-        rules: ['pack-as-is', 'alternate-dimensions'],
-    },
+    { name: 'Item Handling', rules: ['fragile', 'lock-orientation'] },
+    { name: 'Item Interaction', rules: ['exclude', 'exclude-all'] },
+    { name: 'Special Packing', rules: ['pack-as-is', 'alternate-dimensions'] },
 ];
 
 interface RuleAccordionProps {
@@ -41,57 +29,65 @@ export const RuleAccordion: React.FC<RuleAccordionProps> = ({
     selectedRules,
     onUpdateRules,
 }) => {
-    const { items, customBoxTypes, selectedItemRefId } = usePaccurateStore();
-    const [disabledRules, setDisabledRules] = useState<string[]>([]);
+    const { items, selectedItemRefId } = usePaccurateStore();
+    const [disabledRules, setDisabledRules] = useState<Rule['operation'][]>([]);
     const [applicableRules, setApplicableRules] = useState<Rule['operation'][]>([]);
-
-    const updateDisabledRules = useCallback(() => {
-        const newDisabledRules = selectedRules.flatMap(
-            (rule) => ruleConfigs[rule.operation].conflicts
-        );
-        setDisabledRules(newDisabledRules);
-    }, [selectedRules]);
 
     useEffect(() => {
         setApplicableRules(getApplicableRules(items.length));
     }, [items.length]);
 
     useEffect(() => {
-        updateDisabledRules();
-    }, [updateDisabledRules]);
+        const newDisabledRules = selectedRules.flatMap(
+            (rule) => ruleConfigs[rule.operation].conflicts
+        );
+        setDisabledRules(newDisabledRules);
+    }, [selectedRules]);
 
     const handleRuleToggle = useCallback((rule: Rule['operation']) => {
-        if (selectedRules.some((r) => r.operation === rule)) {
-            onUpdateRules(selectedRules.filter((r) => r.operation !== rule));
-        } else {
-            onUpdateRules([...selectedRules, { id: Date.now().toString(), operation: rule, itemRefId: selectedItemRefId || 0, options: {} }]);
-        }
+        onUpdateRules(
+            selectedRules.some((r) => r.operation === rule)
+                ? selectedRules.filter((r) => r.operation !== rule)
+                : [...selectedRules, {
+                    id: Date.now().toString(),
+                    operation: rule,
+                    itemRefId: selectedItemRefId!,
+                    options: ruleConfigs[rule].options
+                        ? Object.fromEntries(
+                            Object.entries(ruleConfigs[rule].options!).map(
+                                ([key, option]) => {
+                                    if (option.type === 'toggle') return [key, true];
+                                    if (option.type === 'multiSelect') return [key, []];
+                                    if (rule === 'lock-orientation' && key === 'freeAxes') return [key, []];
+                                    return [key, ''];
+                                }
+                            )
+                        )
+                        : {}
+                }]
+        );
     }, [selectedRules, selectedItemRefId, onUpdateRules]);
 
     const handleOptionChange = useCallback((ruleOperation: Rule['operation'], optionKey: string, value: any) => {
         onUpdateRules(
-            selectedRules.map((rule) =>
-                rule.operation === ruleOperation
-                    ? { ...rule, options: { ...rule.options, [optionKey]: value } }
-                    : rule
-            )
+            selectedRules.map((rule) => {
+                if (rule.operation === ruleOperation) {
+                    let newValue = value;
+                    if (ruleOperation === 'lock-orientation' && optionKey === 'freeAxes') {
+                        newValue = value.map((v: string) => parseInt(v));
+                    }
+                    return { ...rule, options: { ...rule.options, [optionKey]: newValue } };
+                }
+                return rule;
+            })
         );
     }, [selectedRules, onUpdateRules]);
 
     const getOptionChoices = useCallback((ruleOperation: Rule['operation'], optionKey: string) => {
-        switch (ruleOperation) {
-            case 'exclude':
-                if (optionKey === 'excludedItems') {
-                    return items
-                        .filter((item) => item.refId !== selectedItemRefId)
-                        .map((item) => item.name || item.refId.toString());
-                }
-                break;
-            case 'lock-orientation':
-                if (optionKey === 'freeAxes') {
-                    return ['x', 'y', 'z'];
-                }
-                break;
+        if (ruleOperation === 'exclude' && optionKey === 'excludedItems') {
+            return items
+                .filter((item) => item.refId !== selectedItemRefId)
+                .map((item) => item.name || `Item ${item.refId}`);
         }
         return ruleConfigs[ruleOperation].options?.[optionKey]?.choices || [];
     }, [items, selectedItemRefId]);
@@ -111,24 +107,27 @@ export const RuleAccordion: React.FC<RuleAccordionProps> = ({
                         </h2>
                         <AccordionPanel pb={4}>
                             {category.rules.map((rule) => {
-                                const selectedRule = selectedRules.find((r) => r.operation === rule);
-                                const isApplicable = applicableRules.includes(rule as Rule['operation']);
+                                const ruleOperation = rule as Rule['operation'];
+                                const selectedRule = selectedRules.find((r) => r.operation === ruleOperation);
+                                const isApplicable = applicableRules.includes(ruleOperation);
+                                const isDisabled = disabledRules.includes(ruleOperation) || !selectedItemRefId || !isApplicable;
                                 return (
                                     <Tooltip
-                                        label={isApplicable ? ruleConfigs[rule as keyof typeof ruleConfigs].description : `Not applicable with ${items.length} item(s)`}
                                         key={rule}
+                                        label={isApplicable ? ruleConfigs[ruleOperation].description : `Not applicable with ${items.length} item(s)`}
                                     >
                                         <Box>
                                             <RuleBox
-                                                rule={rule as Rule['operation']}
+                                                rule={ruleOperation}
                                                 isSelected={!!selectedRule}
-                                                onToggle={() => handleRuleToggle(rule as Rule['operation'])}
-                                                isDisabled={disabledRules.includes(rule) || !selectedItemRefId || !isApplicable}
+                                                onToggle={() => handleRuleToggle(ruleOperation)}
+                                                isDisabled={isDisabled}
                                                 options={selectedRule?.options || {}}
                                                 onOptionChange={(optionKey, value) =>
-                                                    handleOptionChange(rule as Rule['operation'], optionKey, value)
+                                                    handleOptionChange(ruleOperation, optionKey, value)
                                                 }
-                                                getOptionChoices={(optionKey) => getOptionChoices(rule as Rule['operation'], optionKey)}
+                                                getOptionChoices={(optionKey) => getOptionChoices(ruleOperation, optionKey) || []}
+
                                             />
                                         </Box>
                                     </Tooltip>

@@ -2,7 +2,7 @@ import { usePaccurateStore } from './store/paccurateStore';
 
 export async function testPaccurateApi() {
     const state = usePaccurateStore.getState();
-    const { items, boxTypeSets, customBoxTypes, selectedCustomBoxTypeIds } = state;
+    const { items, boxTypeSets, customBoxTypes, selectedCustomBoxTypeIds, rules } = state;
 
     const selectedCustomBoxTypes = customBoxTypes.filter((boxType: { id: string }) =>
         selectedCustomBoxTypeIds.includes(boxType.id)
@@ -12,6 +12,7 @@ export async function testPaccurateApi() {
         itemSets: items,
         boxTypes: selectedCustomBoxTypes,
         boxTypeSets: boxTypeSets,
+        rules: rules,
     };
 
     try {

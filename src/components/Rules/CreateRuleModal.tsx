@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
     Modal,
     ModalOverlay,
@@ -10,6 +10,7 @@ import {
     Button,
     VStack,
     Alert,
+    Text,
     AlertIcon,
     AlertTitle,
     AlertDescription,
@@ -18,8 +19,8 @@ import {
 import { ItemSelector } from './ItemSelector';
 import { RuleAccordion } from './RuleAccordion';
 import { usePaccurateStore } from '@/app/store/paccurateStore';
-import { Rule } from '@/app/store/paccurateStore';
-import { ruleConfigs } from '@/config/ruleConfigs';
+import { Rule } from '@/app/types/paccurateTypes';
+import { ruleConfigs, validateRule } from '@/config/ruleConfigs';
 
 interface CreateRuleModalProps {
     isOpen: boolean;
@@ -31,71 +32,69 @@ export const CreateRuleModal: React.FC<CreateRuleModalProps> = ({ isOpen, onClos
     const [validationError, setValidationError] = useState<React.ReactNode | null>(null);
     const { addRule, items, selectedItemRefId } = usePaccurateStore();
 
+    useEffect(() => {
+        if (isOpen) {
+            setSelectedRules([]);
+            setValidationError(null);
+        }
+    }, [isOpen]);
+
     const validateRules = useCallback(() => {
-        let hasError = false;
-        const errorMessages: React.ReactNode[] = [];
+        const errors: string[] = [];
 
         selectedRules.forEach(rule => {
-            const config = ruleConfigs[rule.operation];
-            if (config.options) {
-                Object.entries(config.options).forEach(([key, option]) => {
-                    if (option.required && (!rule.options || rule.options[key] === undefined || rule.options[key] === '')) {
-                        hasError = true;
-                        errorMessages.push(
-                            <div key={`${rule.operation}-${key}`}>{`${config.name}: ${option.label} is required`}</div>
-                        );
-                    }
-                });
-            }
+            const error = validateRule(rule, items.length);
+            if (error) errors.push(error);
         });
 
-        if (hasError) {
+        if (errors.length > 0) {
             setValidationError(
                 <Alert status="error">
                     <AlertIcon />
                     <AlertTitle mr={4}>Validation Error</AlertTitle>
-                    <AlertDescription>{errorMessages}</AlertDescription>
+                    <AlertDescription>
+                        <VStack align="start">
+                            {errors.map((error, index) => (
+                                <Text>{error}</Text>
+                            ))}
+                        </VStack>
+                    </AlertDescription>
                 </Alert>
             );
-        } else {
-            setValidationError(null);
+            return false;
         }
 
-        return !hasError;
-    }, [selectedRules]);
+        setValidationError(null);
+        return true;
+    }, [selectedRules, items.length]);
 
     const handleCreateRules = useCallback(() => {
         if (validateRules()) {
-            if (selectedItemRefId) {
-                const selectedItem = items.find(item => item.refId === selectedItemRefId);
-                if (selectedItem) {
-                    let hasError = false;
-                    selectedRules.forEach(rule => {
-                        const result = addRule({
-                            operation: rule.operation,
-                            itemRefId: selectedItem.refId,
-                            options: rule.options,
-                        });
-                        if (result.error) {
-                            setValidationError(
-                                <Alert status="error">
-                                    <AlertIcon />
-                                    <AlertTitle mr={4}>Error</AlertTitle>
-                                    <AlertDescription>{result.error}</AlertDescription>
-                                </Alert>
-                            );
-                            hasError = true;
-                        }
-                    });
-                    if (!hasError) {
-                        onClose();
-                        setSelectedRules([]);
-                        setValidationError(null);
-                    }
+            let hasError = false;
+            selectedRules.forEach(rule => {
+                const result = addRule({
+                    operation: rule.operation,
+                    itemRefId: selectedItemRefId!,
+                    options: rule.options,
+                });
+                if (result.error) {
+                    setValidationError(
+                        <Alert status="error">
+                            <AlertIcon />
+                            <AlertTitle mr={4}>Error</AlertTitle>
+                            <AlertDescription>{result.error}</AlertDescription>
+                        </Alert>
+                    );
+                    hasError = true;
                 }
+            });
+            if (!hasError) {
+                onClose();
+                setSelectedRules([]);
+                setValidationError(null);
             }
         }
-    }, [selectedItemRefId, selectedRules, items, addRule, onClose, validateRules]);
+    }, [selectedItemRefId, selectedRules, addRule, onClose, validateRules]);
 
     const handleUpdateRules = useCallback((updatedRules: Rule[]) => {
         setSelectedRules(updatedRules);
@@ -106,7 +105,7 @@ export const CreateRuleModal: React.FC<CreateRuleModalProps> = ({ isOpen, onClos
         <Modal isOpen={isOpen} onClose={onClose} size="3xl">
             <ModalOverlay />
             <ModalContent maxHeight="80vh" display="flex" flexDirection="column">
-                <ModalHeader>Create Item Rule</ModalHeader>
+                <ModalHeader fontSize="lg">Create Item Rule</ModalHeader>
                 <ModalCloseButton />
                 {validationError && (
                     <Box px={6} pt={2}>

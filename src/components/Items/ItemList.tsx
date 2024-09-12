@@ -25,7 +25,7 @@ export const ItemList: React.FC = () => {
 
     return (
         <>
-            <Table variant="simple">
+            <Table variant="simple" fontSize="13px">
                 <Thead bg="gray.100">
                     <Tr>
                         <Th>Ref ID</Th>
@@ -52,14 +52,14 @@ export const ItemList: React.FC = () => {
                                 <IconButton
                                     aria-label="Edit item"
                                     icon={<EditIcon />}
-                                    size="sm"
+                                    size="xs"
                                     mr={2}
                                     onClick={() => handleEdit(item)}
                                 />
                                 <IconButton
                                     aria-label="Delete item"
                                     icon={<DeleteIcon />}
-                                    size="sm"
+                                    size="xs"
                                     onClick={() => removeItem(item.refId)}
                                 />
                             </Td>

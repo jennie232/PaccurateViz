@@ -10,7 +10,7 @@ export const ItemSet: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     return (
-        <Flex flexDirection="column" gap={4}>
+        <Flex flexDirection="column" gap={2}>
             <Flex mb={4} justify="space-between" align="center">
                 <Box>
                     <Text fontSize="xl" fontWeight="bold">

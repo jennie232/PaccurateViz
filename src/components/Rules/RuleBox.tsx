@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box, Checkbox, VStack, Text, Flex, Switch, FormLabel } from '@chakra-ui/react';
-import { Rule } from '@/app/store/paccurateStore';
+import { Box, Checkbox, VStack, Text, Flex, Switch } from '@chakra-ui/react';
+import { Rule } from '@/app/types/paccurateTypes';
 import { ruleConfigs, RuleConfig, RuleOption } from '@/config/ruleConfigs';
 import { TextOption } from './RuleOptions/TextOption';
 import { NumberOption } from './RuleOptions/NumberOption';
@@ -15,6 +15,7 @@ interface RuleBoxProps {
     options: Record<string, any>;
     onOptionChange: (optionKey: string, value: any) => void;
     getOptionChoices: (optionKey: string) => string[];
+    parseOptionChoice?: (choice: string) => string;
 }
 
 export const RuleBox: React.FC<RuleBoxProps> = ({
@@ -30,62 +31,43 @@ export const RuleBox: React.FC<RuleBoxProps> = ({
 
     const renderOption = (key: string, optionConfig: RuleOption) => {
         const choices = getOptionChoices(key);
+
+        const commonProps = {
+            label: optionConfig.label,
+            value: options[key] ?? '',
+            onChange: (value: any) => onOptionChange(key, value),
+            placeholder: optionConfig.placeholder,
+            isRequired: optionConfig.required,
+        };
+
         switch (optionConfig.type) {
             case 'text':
-                return (
-                    <TextOption
-                        key={key}
-                        label={optionConfig.label}
-                        value={options[key] || ''}
-                        onChange={(value) => onOptionChange(key, value)}
-                        placeholder={optionConfig.placeholder}
-                        isRequired={optionConfig.required}
-                    />
-                );
+                return <TextOption key={key} {...commonProps} />;
             case 'number':
-                return (
-                    <NumberOption
-                        key={key}
-                        label={optionConfig.label}
-                        value={options[key] || 0}
-                        onChange={(value) => onOptionChange(key, value)}
-                        placeholder={optionConfig.placeholder}
-                        isRequired={optionConfig.required}
-                    />
-                );
+                return <NumberOption key={key} {...commonProps} value={options[key] ?? 0} />;
             case 'multiNumber':
-                return (
-                    <MultiNumberOption
-                        key={key}
-                        label={optionConfig.label}
-                        value={options[key] || []}
-                        onChange={(value) => onOptionChange(key, value)}
-                        placeholder={optionConfig.placeholder}
-                        isRequired={optionConfig.required}
-                    />
-                );
+                return <MultiNumberOption key={key} {...commonProps} value={options[key] ?? []} />;
             case 'multiSelect':
                 return (
                     <MultiSelectOption
                         key={key}
-                        label={optionConfig.label}
-                        value={options[key] || []}
-                        onChange={(value) => onOptionChange(key, value)}
-                        choices={choices}
-                        isRequired={optionConfig.required}
+                        {...commonProps}
+                        choices={getOptionChoices(key)}
+                        value={options[key] ?? []}
                     />
                 );
             case 'toggle':
                 return (
-                    <Flex align="center">
+                    <Flex key={key} align="center">
                         <Switch
-                            key={key}
-                            isChecked={options[key] || false}
-                            onChange={(e) => onOptionChange(key, e.target.checked)}
+                            isChecked={options[key] ?? false}
+                            onChange={(e) => {
+                                onOptionChange(key, e.target.checked);
+                                if (key === 'toggle') onToggle();
+                            }}
                             colorScheme="purple"
                         />
                         <Text fontSize="xs" fontWeight="500" ml={2}>{optionConfig.label}</Text>
-
                     </Flex>
                 );
             default:
@@ -94,7 +76,7 @@ export const RuleBox: React.FC<RuleBoxProps> = ({
     };
 
     const hasOptions = config.options && Object.keys(config.options).length > 0;
-    const isToggleOnly = hasOptions && config.options && Object.values(config.options).every(option => option.type === 'toggle');
+    const isToggleOnly = hasOptions && Object.values(config.options!).every(option => option.type === 'toggle');
 
     return (
         <Box mb={2} borderWidth={1} borderRadius="md" p={3} opacity={isDisabled ? 0.5 : 1} bg="white">
@@ -109,7 +91,6 @@ export const RuleBox: React.FC<RuleBoxProps> = ({
                         />
                         <Text fontSize="sm" fontWeight="500" ml={2}>{config.name}</Text>
                     </Flex>
-
                 ) : (
                     <>
                         <Checkbox

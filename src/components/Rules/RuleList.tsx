@@ -1,14 +1,14 @@
 import React from 'react';
-import { VStack, Text, Box, Image, Button, Icon, useDisclosure, SimpleGrid, Flex } from '@chakra-ui/react';
+import { VStack, Text, Box, Image, SimpleGrid } from '@chakra-ui/react';
 import { RuleCard } from './RuleCard';
 import { usePaccurateStore } from '@/app/store/paccurateStore';
 
 export const RuleList: React.FC = () => {
-    const { rules, updateRule, removeRule, items } = usePaccurateStore();
+    const { rules } = usePaccurateStore();
 
     return (
         <Box>
-            <Box bg="purple.50" width="100%" height="530px" borderRadius="md" overflowY="auto">
+            <Box bg="purple.50" width="100%" height="450px" borderRadius="md" overflowY="auto">
                 {rules.length === 0 ? (
                     <VStack gap={3} justifyContent="center" height="100%">
                         <Image
@@ -27,14 +27,11 @@ export const RuleList: React.FC = () => {
                 ) : (
                     <SimpleGrid columns={3} spacing={4} padding={4}>
                         {rules.map((rule) => {
-                            const item = items.find(item => item.refId === rule.itemRefId);
+                            console.log('Rendering rule:', rule);
                             return (
                                 <RuleCard
                                     key={rule.id}
                                     rule={rule}
-                                    item={item}
-                                    onEdit={(updatedRule) => updateRule(rule.id, updatedRule)}
-                                    onDelete={() => removeRule(rule.id)}
                                 />
                             );
                         })}

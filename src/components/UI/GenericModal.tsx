@@ -47,7 +47,7 @@ export const GenericModal: React.FC<GenericModalProps> = ({
             <Modal isOpen={isOpen} onClose={onClose} size="xl">
                 <ModalOverlay />
                 <ModalContent paddingTop={2} paddingBottom={4}>
-                    <ModalHeader fontSize="xl">{title}</ModalHeader>
+                    <ModalHeader fontSize="lg">{title}</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         {children}

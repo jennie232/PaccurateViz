@@ -8,11 +8,10 @@ interface PackingResultVisualProps {
 
 export const PackingResultVisual: React.FC<PackingResultVisualProps> = ({ result }) => {
     const addOutlineToSvg = (svg: string) => {
-        // Extract viewBox values
+
         const viewBoxMatch = svg.match(/viewBox=['"]([^'"]+)['"]/);
         const viewBox = viewBoxMatch ? viewBoxMatch[1] : '-28.53300858899106,-26.531036307982866,123.7436867076458,122.4744871391589';
 
-        // Construct a new SVG with proper structure
         const fixedSvg = `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}">
             <g stroke="black" stroke-width="1" fill="none">

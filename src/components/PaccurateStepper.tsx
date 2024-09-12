@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { Box, Text, Divider, Flex, Button } from '@chakra-ui/react';
+import { Box, Divider, Flex, Button } from '@chakra-ui/react';
 import { Stepper, Step, StepIndicator, StepStatus, StepTitle, StepSeparator, useSteps, StepIcon, StepNumber } from '@chakra-ui/stepper';
 import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import { BoxTypeSet } from "@/components/BoxTypes/BoxTypeSet";

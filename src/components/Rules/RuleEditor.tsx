@@ -1,6 +1,6 @@
 import React from 'react';
 import { VStack, FormControl, FormLabel, Input, Switch } from '@chakra-ui/react';
-import { Rule } from '@/app/types/paccurateTypes';
+import { Rule, Item } from '@/app/types/paccurateTypes';
 import { ruleConfigs, RuleOption } from '@/config/ruleConfigs';
 import { MultiSelectOption } from './RuleOptions/MultiSelectOption';
 import { NumberOption } from './RuleOptions/NumberOption';
@@ -9,7 +9,7 @@ import { MultiNumberOption } from './RuleOptions/MultiNumberOption';
 interface RuleEditorProps {
     rule: Rule;
     onUpdateRule: (updatedRule: Rule) => void;
-    items: any[];
+    items: Item[];
 }
 
 export const RuleEditor: React.FC<RuleEditorProps> = ({ rule, onUpdateRule, items }) => {

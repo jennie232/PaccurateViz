@@ -2,10 +2,7 @@
 import React from 'react';
 import {
     FormControl,
-    FormLabel,
     Select,
-    Box,
-    Text,
 } from '@chakra-ui/react';
 import { usePaccurateStore } from '@/app/store/paccurateStore';
 import { RuleModalCard } from './RuleModalCard';

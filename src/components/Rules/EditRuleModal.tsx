@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Button, VStack, Text, Alert, AlertIcon, Flex } from '@chakra-ui/react';
+import { Button, VStack, Alert, AlertIcon, Flex } from '@chakra-ui/react';
 import { GenericModal } from '../UI/GenericModal';
 import { RuleEditor } from './RuleEditor';
 import { usePaccurateStore } from '@/app/store/paccurateStore';

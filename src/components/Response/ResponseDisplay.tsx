@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react';
-import { Box, Text, Button, Flex, VStack, Alert, AlertIcon, AlertTitle, AlertDescription } from '@chakra-ui/react';
+import { Box, Text, Button, Flex, Alert, AlertIcon, AlertTitle, AlertDescription } from '@chakra-ui/react';
 import { testPaccurateApi } from '@/app/utils/testPaccurateApi';
 import { PackResponse } from '@/app/types/paccurateTypes';
 import { PackingResultContainer } from '../Results/PackingResultsContainer';

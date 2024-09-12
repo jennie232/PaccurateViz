@@ -13,7 +13,6 @@ export const MultiNumberOption: React.FC<MultiNumberOptionProps> = ({
     label,
     value,
     onChange,
-    placeholder,
     isRequired = false
 }) => {
     const handleChange = (index: number, newValue: number) => {

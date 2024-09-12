@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { usePaccurateStore } from '@/app/store/paccurateStore';
+
 
 const PACCURATE_API_URL = 'https://api.paccurate.io/';
 
@@ -14,7 +14,6 @@ export async function POST(request: NextRequest) {
             rules: body.rules.map((rule: any) => rule.apiFormatted),
         };
 
-        console.log(paccurateRequest);
         const paccurateResponse = await fetch(PACCURATE_API_URL, {
             method: 'POST',
             headers: {

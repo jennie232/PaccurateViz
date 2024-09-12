@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, HStack, Divider, Flex } from '@chakra-ui/react';
+import { Box, Divider, Flex } from '@chakra-ui/react';
 import { PackingResultSummary } from './PackingResultSummary';
 import { PackingResultDetails } from './PackingResultDetails';
 import { PackingResultVisual } from './PackingResultVisual';

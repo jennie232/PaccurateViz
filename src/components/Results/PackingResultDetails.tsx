@@ -1,5 +1,5 @@
 import React from 'react';
-import { VStack, Text, Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
+import { VStack, Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
 import { PackResponse } from '@/app/types/paccurateTypes';
 
 interface PackingResultDetailsProps {

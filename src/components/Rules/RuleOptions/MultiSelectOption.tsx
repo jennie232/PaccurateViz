@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, FormLabel, CheckboxGroup, Checkbox, VStack, Text } from '@chakra-ui/react';
+import { FormControl, FormLabel, Checkbox, VStack, Text } from '@chakra-ui/react';
 
 interface MultiSelectOptionProps {
     label: string;

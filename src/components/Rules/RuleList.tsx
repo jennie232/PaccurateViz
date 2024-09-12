@@ -21,7 +21,7 @@ export const RuleList: React.FC = () => {
                         />
                         <Text fontSize={["sm", "md", "lg"]} fontWeight="bold">No rules have been added yet.</Text>
                         <Text color="gray.500" fontSize={["xs", "sm"]}>
-                            If you want to create rules for your items, you can do so by clicking the 'Create Rule' button above.
+                            If you want to create rules for your items, you can do so by clicking the &apos;Create Rule&apos; button above.
                         </Text>
                     </VStack>
                 ) : (

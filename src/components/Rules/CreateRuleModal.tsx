@@ -20,7 +20,7 @@ import { ItemSelector } from './ItemSelector';
 import { RuleAccordion } from './RuleAccordion';
 import { usePaccurateStore } from '@/app/store/paccurateStore';
 import { Rule } from '@/app/types/paccurateTypes';
-import { ruleConfigs, validateRule } from '@/config/ruleConfigs';
+import { validateRule } from '@/config/ruleConfigs';
 
 interface CreateRuleModalProps {
     isOpen: boolean;
@@ -54,7 +54,7 @@ export const CreateRuleModal: React.FC<CreateRuleModalProps> = ({ isOpen, onClos
                     <AlertTitle mr={4}>Validation Error</AlertTitle>
                     <AlertDescription>
                         <VStack align="start">
-                            {errors.map((error, index) => (
+                            {errors.map((error) => (
                                 <Text>{error}</Text>
                             ))}
                         </VStack>

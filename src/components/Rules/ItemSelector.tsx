@@ -2,7 +2,10 @@
 import React from 'react';
 import {
     FormControl,
+    FormLabel,
     Select,
+    Box,
+    Text,
 } from '@chakra-ui/react';
 import { usePaccurateStore } from '@/app/store/paccurateStore';
 import { RuleModalCard } from './RuleModalCard';
@@ -11,7 +14,7 @@ export const ItemSelector: React.FC = () => {
     const { items, selectedItemRefId, selectItem } = usePaccurateStore();
 
     const formatItemDetails = (item: any) => {
-        const details = [];
+        const details: string[] = [];
         if (item.name) details.push(`name: ${item.name}`);
         if (item.refId) details.push(`refId: ${item.refId}`);
         if (item.weight) details.push(`weight: ${item.weight}`);

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
 import { validateRule, ruleConfigs } from "@/config/ruleConfigs";
-import { Item, BoxType, Rule, InternalRule, PaccurateState } from "@/app/types/paccurateTypes";
+import { InternalRule, PaccurateState } from "@/app/types/paccurateTypes";
 
 
 export const usePaccurateStore = create<PaccurateState>((set, get) => ({

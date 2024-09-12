@@ -117,7 +117,7 @@ export const RuleAccordion: React.FC<RuleAccordionProps> = ({
                                 const isDisabled = disabledRules.includes(ruleOperation) || !selectedItemRefId || !isApplicable;
                                 return (
                                     <Tooltip
-                                        key={rule}
+                                        key={`${rule}-${index}`}
                                         label={isApplicable ? ruleConfigs[ruleOperation].description : `Not applicable with ${items.length} item(s)`}
                                     >
                                         <Box>

@@ -22,6 +22,8 @@ export const RuleCard: React.FC<RuleCardProps> = ({ rule }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { removeRule } = usePaccurateStore();
     const { operation, itemRefId, options } = rule;
+    const { items } = usePaccurateStore();
+
 
     const renderRuleDetails = () => {
         const config = ruleConfigs[operation];
@@ -33,7 +35,7 @@ export const RuleCard: React.FC<RuleCardProps> = ({ rule }) => {
 
                     let displayValue = value.toString();
                     if (operation === 'exclude' && key === 'excludedItems') {
-                        const { items } = usePaccurateStore();
+
                         displayValue = (value as number[])
                             .map(refId => items.find(item => item.refId === refId)?.name || `Item ${refId}`)
                             .join(', ');
